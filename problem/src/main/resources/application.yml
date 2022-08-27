@@ -5,17 +5,32 @@ server:
       timeout: 30m
 
 spring:
+  #兼容swagger在boot2.6后出现的问题
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  #注册名
   application:
     name: problem
+  #数据库
   datasource:
     username: root
     password: 123
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  #注册地址
   cloud:
     nacos:
       discovery:
         server-addr: localhost:8848
-
-
+  #mybatis-plus配置
+mybatis-plus:
+  configuration:
+    #日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto

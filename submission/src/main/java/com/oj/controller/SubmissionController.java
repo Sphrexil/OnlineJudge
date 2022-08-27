@@ -5,27 +5,15 @@ import java.util.Map;
 
 import com.oj.entity.SubmissionEntity;
 import com.oj.service.SubmissionService;
+
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 
-
-
-
-/**
- *
- *
- * @author chenshun
- * @email sunlightcs@gmail.com
- * @date 2022-08-27 16:37:04
- */
 @RestController
-@RequestMapping("generator/submission")
+@RequestMapping("/submission")
 public class SubmissionController {
     @Autowired
     private SubmissionService submissionService;

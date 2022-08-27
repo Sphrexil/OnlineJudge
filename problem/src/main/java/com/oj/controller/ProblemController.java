@@ -8,25 +8,12 @@ import com.oj.entity.ProblemEntity;
 import com.oj.service.ProblemService;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 
-
-
-
-/**
- *
- *
- * @author chenshun
- * @email sunlightcs@gmail.com
- * @date 2022-08-27 16:35:57
- */
 @RestController
-@RequestMapping("generator/problem")
+@RequestMapping("/problem")
 public class ProblemController {
     @Autowired
     private ProblemService problemService;
