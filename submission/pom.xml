@@ -12,7 +12,7 @@
     <artifactId>submission</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>submission</name>
-    <description>submission</description>
+    <description>提交模块</description>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
@@ -25,9 +25,6 @@
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
-
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -12,7 +12,7 @@
     <artifactId>problem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>problem</name>
-    <description>problem</description>
+    <description>问题模块</description>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
