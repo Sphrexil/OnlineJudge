@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.oj</groupId>
-    <artifactId>problem</artifactId>
+    <groupId>com.oj.OnlineJudge</groupId>
+    <artifactId>OnlineJudge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>OnlineJudge</name>
     <description>聚合父工程</description>
@@ -12,6 +12,8 @@
 
     <modules>
         <module>problem</module>
+        <module>common</module>
+        <module>submission</module>
     </modules>
 
 </project>
