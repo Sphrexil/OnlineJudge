@@ -1,4 +1,4 @@
-package com.oj.onlinejudge.problem;
+package com.oj.problem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

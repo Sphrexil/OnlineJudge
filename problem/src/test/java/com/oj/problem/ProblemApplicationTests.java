@@ -1,4 +1,4 @@
-package com.oj.onlinejudge.problem;
+package com.oj.problem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
