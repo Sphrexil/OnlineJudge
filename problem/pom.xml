@@ -8,7 +8,7 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.oj.onlinejudge</groupId>
+    <groupId>com.oj</groupId>
     <artifactId>problem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>problem</name>
@@ -21,7 +21,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.oj.onlinejudge</groupId>
+            <groupId>com.oj</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
