@@ -1,4 +1,4 @@
-package com.oj.cmomon.enums;
+package com.oj.enums;
 
 public enum ResultCode {
     /* 成功 */
@@ -21,7 +21,10 @@ public enum ResultCode {
     USER_ACCOUNT_ALREADY_EXIST(2008, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
     /* 业务错误 */
-    NO_PERMISSION(3001, "没有权限");
+    NO_PERMISSION(3001, "没有权限"),
+    /* 系统错误 */
+    UNKNOWN_EXCEPTION(4001,"系统未知异常");
+
     private Integer code;
     private String msg;
 

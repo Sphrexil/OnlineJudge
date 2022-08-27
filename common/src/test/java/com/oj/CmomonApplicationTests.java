@@ -1,4 +1,4 @@
-package com.oj.cmomon;
+package com.oj;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

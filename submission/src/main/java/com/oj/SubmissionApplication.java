@@ -1,13 +1,13 @@
-package com.oj.problem;
+package com.oj;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProblemApplication {
+public class SubmissionApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProblemApplication.class, args);
+        SpringApplication.run(SubmissionApplication.class, args);
     }
 
 }

@@ -1,6 +1,6 @@
-package com.oj.cmomon.utils;
+package com.oj.utils;
 
-import com.oj.cmomon.enums.ResultCode;
+import com.oj.enums.ResultCode;
 
 import java.io.Serializable;
 
