@@ -21,10 +21,9 @@ public class ProblemController {
      * 列表
      */
     @GetMapping("/list")
-    public ResponseResult list(){
+    public ResponseResult list(Integer pageNum,Integer pageSize){
 
-        List<ProblemEntity> list = problemService.list();
-        return ResponseResult.okResult(list);
+        return problemService.getProblemList(pageNum, pageSize);
     }
 
 
