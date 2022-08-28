@@ -1,14 +1,13 @@
 package com.oj.controller;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
 import com.oj.entity.ProblemEntity;
 import com.oj.service.ProblemService;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,19 +20,19 @@ public class ProblemController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public ResponseResult list(@RequestParam Map<String, Object> params){
+    @GetMapping("/list")
+    public ResponseResult list(){
 
-
-        return ResponseResult.okResult();
+        List<ProblemEntity> list = problemService.list();
+        return ResponseResult.okResult(list);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public ResponseResult info(@PathVariable("id") String id){
+    @GetMapping("/info/{id}")
+    public ResponseResult info(@PathVariable("id") Long id){
         ProblemEntity problemEntity = problemService.getById(id);
         return ResponseResult.okResult(problemEntity);
     }
@@ -41,7 +40,7 @@ public class ProblemController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public ResponseResult save(@RequestBody ProblemEntity problem){
 		problemService.save(problem);
 
@@ -51,7 +50,7 @@ public class ProblemController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PutMapping("/update")
     public ResponseResult update(@RequestBody ProblemEntity problem){
 		problemService.updateById(problem);
 
@@ -61,8 +60,8 @@ public class ProblemController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    public ResponseResult delete(@RequestBody String[] ids){
+    @DeleteMapping("/delete")
+    public ResponseResult delete(@RequestBody Long[] ids){
 		problemService.removeByIds(Arrays.asList(ids));
 
         return ResponseResult.okResult();

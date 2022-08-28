@@ -1,9 +1,11 @@
 package com.oj.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oj.enums.ResultCode;
 
 import java.io.Serializable;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseResult<T> implements Serializable {
 
     /**

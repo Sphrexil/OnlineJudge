@@ -1,10 +1,14 @@
 package com.oj.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -23,7 +27,7 @@ public class ProblemEntity implements Serializable {
 	 *
 	 */
 	@TableId
-	private String id;
+	private Long id;
 	/**
 	 * 问题显示的名字
 
@@ -62,15 +66,19 @@ public class ProblemEntity implements Serializable {
 	 * 软删除
 
 	 */
-	private Integer isDeleted;
+	private Integer del_flag;
 	/**
 	 *
 	 */
-	private Date updateTime;
-	/**
-	 *
-	 */
+	@ApiModelProperty(value = "创建时间")
+	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
+	/**
+	 *
+	 */
+	@ApiModelProperty(value = "修改时间")
+	@TableField(fill = FieldFill.INSERT_UPDATE)
+	private Date updateTime;
 	/**
 	 * 题目难度
 	 */
@@ -84,5 +92,4 @@ public class ProblemEntity implements Serializable {
 	 * 时空限制
 	 */
 	private Integer memoryLimit;
-
 }

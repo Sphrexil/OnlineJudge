@@ -23,4 +23,14 @@ spring:
       discovery:
         server-addr: localhost:8848
 
-
+  #mybatis-plus配置
+mybatis-plus:
+  configuration:
+    #日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deFlag
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+      id-type: auto

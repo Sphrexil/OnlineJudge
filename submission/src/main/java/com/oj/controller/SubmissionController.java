@@ -1,14 +1,13 @@
 package com.oj.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.oj.entity.SubmissionEntity;
 import com.oj.service.SubmissionService;
-
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,20 +20,21 @@ public class SubmissionController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public ResponseResult list(@RequestParam Map<String, Object> params){
+    @GetMapping("/list")
+    public ResponseResult list() {
 
+        List<SubmissionEntity> list = submissionService.list();
 
-        return ResponseResult.okResult();
+        return ResponseResult.okResult(list);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public ResponseResult info(@PathVariable("id") String id){
-		SubmissionEntity submission = submissionService.getById(id);
+    @GetMapping("/info/{id}")
+    public ResponseResult info(@PathVariable("id") Long id) {
+        SubmissionEntity submission = submissionService.getById(id);
 
         return ResponseResult.okResult(submission);
     }
@@ -42,9 +42,9 @@ public class SubmissionController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    public ResponseResult save(@RequestBody SubmissionEntity submission){
-		submissionService.save(submission);
+    @PostMapping("/save")
+    public ResponseResult save(@RequestBody SubmissionEntity submission) {
+        submissionService.save(submission);
 
         return ResponseResult.okResult();
     }
@@ -52,9 +52,9 @@ public class SubmissionController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    public ResponseResult update(@RequestBody SubmissionEntity submission){
-		submissionService.updateById(submission);
+    @PutMapping("/update")
+    public ResponseResult update(@RequestBody SubmissionEntity submission) {
+        submissionService.updateById(submission);
 
         return ResponseResult.okResult();
     }
@@ -62,9 +62,9 @@ public class SubmissionController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    public ResponseResult delete(@RequestBody String[] ids){
-		submissionService.removeByIds(Arrays.asList(ids));
+    @DeleteMapping("/delete")
+    public ResponseResult delete(@RequestBody Long[] ids) {
+        submissionService.removeByIds(Arrays.asList(ids));
 
         return ResponseResult.okResult();
     }

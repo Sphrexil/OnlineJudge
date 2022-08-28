@@ -1,10 +1,11 @@
 package com.oj.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -23,38 +24,45 @@ public class SubmissionEntity implements Serializable {
 	 *
 	 */
 	@TableId
-	private String id;
+	private Long id;
 	/**
-	 *
+	 *	提交代码
 	 */
 	private String code;
 	/**
-	 *
+	 *	创建时间
 	 */
+	@ApiModelProperty(value = "创建时间")
+	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
 	/**
-	 *
+	 *	提交状态
 	 */
 	private String status;
 	/**
-	 *
+	 *	编程语言
 	 */
 	private String language;
 	/**
-	 *
+	 *	编译错误信息
 	 */
 	private String compileError;
 	/**
-	 *
+	 *	内存使用
 	 */
 	private Integer memoryUsage;
 	/**
-	 *
+	 *	答题时间
 	 */
 	private Integer timeUsage;
 	/**
-	 *
+	 *	作者
 	 */
 	private String author;
+	/**
+	 *	逻辑删除
+	 */
+	@TableLogic
+	private Integer delFlag;
 
 }
