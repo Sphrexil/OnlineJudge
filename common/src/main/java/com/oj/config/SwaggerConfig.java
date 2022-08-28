@@ -17,6 +17,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
+
+/**
+ * @Title: swagger的全局配置
+ * @Description: TODO
+ * @Author: zhenyu
+ * @DateTime: 2022/8/28 17:25
+ */
 @Slf4j
 @Configuration
 @EnableSwagger2

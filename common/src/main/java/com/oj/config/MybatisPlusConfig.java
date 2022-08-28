@@ -10,9 +10,16 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Date;
 
+/**
+ * @Title: MyBatis的全局配置
+ * @Description: TODO
+ * @Author: zhenyu
+ * @DateTime: 2022/8/28 17:25
+ */
+
 @Configuration
 @Slf4j
-public class MybatisPlusConfig {
+public class MybatisPlusConfig implements MetaObjectHandler{
 
     /**
      * 3.4.0之后版本
@@ -27,4 +34,19 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return mybatisPlusInterceptor;
     }
+
+    //重写一下insertFill方法 在插入时进行时间的自动维护
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        log.info("新增更新时间-------------------------");
+        this.strictInsertFill(metaObject,"createTime",Date.class,new Date());
+        this.strictInsertFill(metaObject,"updateTime",Date.class,new Date());
+    }
+    // 修改操作是进行时间的维护
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        log.info("修改更新时间-------------------------");
+        this.strictUpdateFill(metaObject,"updateTime",Date.class,new Date());
+    }
+
 }
