@@ -1,9 +1,3 @@
-server:
-  port: 9000
-  servlet:
-    session:
-      timeout: 30m
-
 spring:
   application:
     name: common

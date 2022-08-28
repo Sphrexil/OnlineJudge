@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+/**
+ * @Title: 全局异常处理
+ * @Description: TODO
+ * @Author: zhenyu
+ * @DateTime: 2022/8/28 15:11
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -14,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseResult exceptionHandler(Exception e){
         //打印异常信息
-        log.error("出现了未知异常！ {}",e);
+        log.error("出现了未知异常:{}",e);
         //从异常对象中获取提示信息封装返回
         return ResponseResult.errorResult(ResultCode.UNKNOWN_EXCEPTION.getCode(),e.getMessage());
     }
