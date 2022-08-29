@@ -7,6 +7,9 @@ import java.util.List;
 import com.oj.entity.ProblemEntity;
 import com.oj.service.ProblemService;
 import com.oj.utils.ResponseResult;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,11 @@ public class ProblemController {
      * 列表
      */
     @GetMapping("/list")
+    @ApiOperation(value = "problem列表", notes = "不区分难度,按照时间倒序")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码", required=true, dataType="int"),
+            @ApiImplicitParam(name = "pageSize", value = "页码大小", required=true, dataType="int")
+    })
     public ResponseResult list(Integer pageNum,Integer pageSize){
 
         return problemService.getProblemList(pageNum, pageSize);
