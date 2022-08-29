@@ -12,13 +12,7 @@ import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- *
- *
- * @author chenshun
- * @email sunlightcs@gmail.com
- * @date 2022-08-27 16:35:57
- */
+
 @Data
 @TableName("problem")
 public class ProblemEntity implements Serializable {
