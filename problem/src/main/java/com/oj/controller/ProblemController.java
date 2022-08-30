@@ -1,12 +1,11 @@
 package com.oj.controller;
 
 import java.util.Arrays;
-import java.util.List;
-
 
 import com.oj.entity.ProblemEntity;
 import com.oj.service.ProblemService;
 import com.oj.utils.ResponseResult;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/problem")
+@Api("Problem相关接口")
 public class ProblemController {
     @Autowired
     private ProblemService problemService;
