@@ -32,7 +32,6 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *	创建时间
 	 */
-	@ApiModelProperty(value = "创建时间")
 	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
 	/**
@@ -58,11 +57,16 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *	作者
 	 */
-	private String author;
+	private Long author;
 	/**
 	 *	逻辑删除
 	 */
 	@TableLogic
 	private Integer delFlag;
+
+	/**
+	 *  问题题号
+	 */
+	private Long problemId;
 
 }

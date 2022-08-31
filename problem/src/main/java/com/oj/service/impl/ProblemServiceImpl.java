@@ -10,6 +10,8 @@ import com.oj.utils.ResponseResult;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.Objects;
+
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> implements ProblemService {
@@ -32,5 +34,17 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
         PageUtils pageUtils = new PageUtils(problemIPage);
         // 返回带上list数据，和总计
         return ResponseResult.okResult(pageUtils);
+    }
+
+    @Override
+    public ResponseResult getProblemById(Long id) {
+
+        if (Objects.isNull(id)) {
+            throw new RuntimeException();
+        }
+        // TODO 待优化
+        ProblemEntity problemEntity = this.baseMapper.selectById(id);
+
+        return ResponseResult.okResult(problemEntity);
     }
 }

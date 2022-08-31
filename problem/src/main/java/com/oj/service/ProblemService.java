@@ -10,5 +10,7 @@ public interface ProblemService extends IService<ProblemEntity> {
 
     /* 不分难度的problem分页，按照时间排序 */
     ResponseResult getProblemList(Integer pageNum, Integer pageSize);
+
+    ResponseResult getProblemById(Long id);
 }
 

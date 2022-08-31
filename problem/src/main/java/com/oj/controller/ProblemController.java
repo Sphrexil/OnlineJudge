@@ -39,9 +39,9 @@ public class ProblemController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    public ResponseResult info(@PathVariable("id") Long id){
-        ProblemEntity problemEntity = problemService.getById(id);
-        return ResponseResult.okResult(problemEntity);
+    public ResponseResult getProblemById(@PathVariable("id") Long id){
+
+        return problemService.getProblemById(id);
     }
 
     /**

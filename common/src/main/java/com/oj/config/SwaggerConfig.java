@@ -16,6 +16,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -29,11 +32,17 @@ import java.net.UnknownHostException;
 @EnableSwagger2
 public class SwaggerConfig implements ApplicationListener<WebServerInitializedEvent> {
 
+
+    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES =
+            new HashSet<String>(Arrays.asList("application/json","application/xml"));
+
     /* swagger接口提取路径 */
     @Bean
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()).enable(true)
+                .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
+                .produces(DEFAULT_PRODUCES_AND_CONSUMES)
                 .select()
                 //apis： 添加swagger接口提取范围
                 .apis(RequestHandlerSelectors.basePackage("com.oj"))

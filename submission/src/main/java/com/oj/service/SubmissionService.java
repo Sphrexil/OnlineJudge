@@ -2,9 +2,8 @@ package com.oj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.oj.entity.SubmissionEntity;
-
-
-import java.util.Map;
+import com.oj.pojo.vo.UerProblemVo;
+import com.oj.utils.ResponseResult;
 
 /**
  *
@@ -15,5 +14,8 @@ import java.util.Map;
  */
 public interface SubmissionService extends IService<SubmissionEntity> {
 
+    ResponseResult getSubmissionList(Integer pageNum, Integer pageSize, UerProblemVo uerProblemVo);
+
+    ResponseResult submit(SubmissionEntity submission);
 }
 

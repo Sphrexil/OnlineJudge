@@ -44,7 +44,6 @@ public class ProblemEntity implements Serializable {
 	private String inputDescribe;
 	/**
 	 * 测试样例--JSON
-
 	 */
 	private String testCase;
 	/**
@@ -87,4 +86,8 @@ public class ProblemEntity implements Serializable {
 	 * 时空限制
 	 */
 	private Integer memoryLimit;
+	/**
+	 * 时间限制
+	 */
+	private Integer timeLimit;
 }
