@@ -13,7 +13,7 @@ public class Judge {
     public static TestResult process(JudgingArgument judgingArgument){
         String src = judgingArgument.getCodeSrc();
         String fileName = MD5Utils.digest(src.getBytes(StandardCharsets.UTF_8));
-        String exePath = compileProgram(src, fileName);
+        compileProgram(src, fileName);
         TestParam testParam = new TestParam(judgingArgument, fileName, getPWD());
         for(int i = 0;i < judgingArgument.getTestCases().length;i ++){
             try {
@@ -40,19 +40,19 @@ public class Judge {
         caseInWriter.write(out);
         caseOutWriter.flush();caseOutWriter.close();
     }
-    private static String compileProgram(String src, String fileName) {
+    private static void compileProgram(String src, String fileName) {
         Runtime runtime = Runtime.getRuntime();
         Process process;
         log.info(fileName);
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(String.format("%s/file/%s.cpp", getPWD(),fileName)));
+            BufferedWriter out = new BufferedWriter(new FileWriter(String.format("%s/file/src/%s.cpp", getPWD(),fileName)));
             out.write(src);
             out.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         String compileCmd =
-                String.format("g++ -o %s/file/%s %s/file/%s.cpp -O2",
+                String.format("g++ -o %s/file/bin/%s %s/file/src/%s.cpp -O2",
                         getPWD(), fileName,
                         getPWD(), fileName);
         log.info(compileCmd);
@@ -72,7 +72,6 @@ public class Judge {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        return String.format("%s/file/%s", getPWD(), fileName);
     }
 
     private static TestResult testProgram(TestParam testParam){
@@ -106,8 +105,8 @@ public class Judge {
 
     private static void deleteTempFile(String fileName){
         log.info(String.format("delete file %s", fileName));
-        File exe = new File(String.format("%s/file/%s", pwd, fileName));
-        File cFile = new File(String.format("%s/file/%s.cpp", pwd, fileName));
+        File exe = new File(String.format("%s/file/bin/%s", pwd, fileName));
+        File cFile = new File(String.format("%s/file/src/%s.cpp", pwd, fileName));
         boolean deleted = exe.delete();
         if(!deleted){
             log.warn(String.format("%s binary haven't been deleted", fileName));
