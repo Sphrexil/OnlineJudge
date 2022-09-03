@@ -50,6 +50,29 @@ spring:
           name-server: 192.168.1.129:9876
           enable-msg-trace: true
         bindings:
+          #开启事务消息需要在这边再次配置 在stream->rocketmq->bindings下配
+          #生产者配置
+#          Boolean enabled = true;
+#          String group;
+#          Integer maxMessageSize = 4194304;
+#          Boolean transactional = false;
+#          Boolean sync = false;
+#          Boolean vipChannelEnabled = true;
+#          int sendMessageTimeout = 3000;
+#          int compressMessageBodyThreshold = 4096;
+#          int retryTimesWhenSendFailed = 2;
+#          int retryTimesWhenSendAsyncFailed = 2;
+#          boolean retryNextServer = false;
+          #消费者配置
+#          String tags;
+#          String sql;
+#          broadcasting = false;
+#          orderly = false;
+#          delayLevelWhenNextConsume = 0;
+#          suspendCurrentQueueTimeMillis = 1000L;
+#          enabled = true;
+#          pullTimeout = 10000L;
+#          boolean fromStore;
           outputTX:
             producer:
               transactional: true
@@ -58,7 +81,9 @@ spring:
             consumer:
               delayLevelWhenNextConsume: -1
               group: Tx-Group
-          #####
+          ##### 配置基本队列配置在stream->bindings下面配
+          #基本属性配置 见下官文
+          #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder
       bindings:
         FirthSubmissionOutput:
           group: test-group #  生产者组别
