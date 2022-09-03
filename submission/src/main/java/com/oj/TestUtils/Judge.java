@@ -10,27 +10,49 @@ import java.util.Arrays;
 
 public class Judge {
     private static final Logger log = LoggerFactory.getLogger(Judge.class);
-
-    public static void main(String[] args) {
-        String src = "#include <bits/stdc++.h>\nint main(){int a, b;}";
+    public static TestResult process(JudgingArgument judgingArgument){
+        String src = judgingArgument.getCodeSrc();
         String fileName = MD5Utils.digest(src.getBytes(StandardCharsets.UTF_8));
         String exePath = compileProgram(src, fileName);
+        TestParam testParam = new TestParam(judgingArgument, fileName, getPWD());
+        for(int i = 0;i < judgingArgument.getTestCases().length;i ++){
+            try {
+                writeCaseIO(judgingArgument.getTestCases()[i].in,
+                        judgingArgument.getTestCases()[i].out,
+                        fileName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            TestResult testResult = testProgram(testParam);
+            log.info(testResult.toString());
+            deleteTempFile(fileName);
+        }
         deleteTempFile(fileName);
+        return null;
     }
-
+    private static void writeCaseIO(String in, String out, String fileName) throws IOException {
+        BufferedWriter caseInWriter = new BufferedWriter(
+                new FileWriter(String.format("%s/file/in/%s.in", getPWD(), fileName)));
+        caseInWriter.write(in);
+        caseInWriter.flush();caseInWriter.close();
+        BufferedWriter caseOutWriter = new BufferedWriter(
+                new FileWriter(String.format("%s/file/out/%s.out", getPWD(), fileName)));
+        caseInWriter.write(out);
+        caseOutWriter.flush();caseOutWriter.close();
+    }
     private static String compileProgram(String src, String fileName) {
         Runtime runtime = Runtime.getRuntime();
         Process process;
         log.info(fileName);
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(String.format("%s/file/%s.c", getPWD(),fileName)));
+            BufferedWriter out = new BufferedWriter(new FileWriter(String.format("%s/file/%s.cpp", getPWD(),fileName)));
             out.write(src);
             out.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         String compileCmd =
-                String.format("g++ -o %s/file/%s %s/file/%s.c -O2",
+                String.format("g++ -o %s/file/%s %s/file/%s.cpp -O2",
                         getPWD(), fileName,
                         getPWD(), fileName);
         log.info(compileCmd);
@@ -42,6 +64,7 @@ public class Judge {
             StringBuilder sb = new StringBuilder();
             while ((compileInfo = error.readLine()) != null) {
                 sb.append(compileInfo);
+                sb.append("\n");
             }
             if(sb.toString().length() != 0){
                 throw new Exception(sb.toString());
@@ -84,9 +107,15 @@ public class Judge {
     private static void deleteTempFile(String fileName){
         log.info(String.format("delete file %s", fileName));
         File exe = new File(String.format("%s/file/%s", pwd, fileName));
-        File cFile = new File(String.format("%s/file/%s.c", pwd, fileName));
+        File cFile = new File(String.format("%s/file/%s.cpp", pwd, fileName));
         boolean deleted = exe.delete();
+        if(!deleted){
+            log.warn(String.format("%s binary haven't been deleted", fileName));
+        }
         deleted = cFile.delete();
+        if(!deleted){
+            log.warn(String.format("%s src haven't been deleted", fileName));
+        }
     }
     private static String getRules(TestParam testParam){
         return String.format(
@@ -104,7 +133,6 @@ public class Judge {
                         +"--output_path=%s "
                         +"--error_path=%s "
                         +"--log_path=%s "
-                        +"--seccomp_rule_name=%s "
                 ,
                 testParam.getMaxCpuTime(),
                 testParam.getMaxMemory(),
@@ -119,8 +147,7 @@ public class Judge {
                 testParam.getInputPath(),
                 testParam.getOutputPath(),
                 testParam.getErrorPath(),
-                testParam.getLogPath(),
-                testParam.getSeccompRuleName()
+                testParam.getLogPath()
         );
     }
 

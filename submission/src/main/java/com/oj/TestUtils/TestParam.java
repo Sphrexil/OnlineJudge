@@ -1,6 +1,7 @@
 package com.oj.TestUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -8,6 +9,19 @@ import lombok.Data;
  */
 @Data
 public class TestParam {
+    public TestParam(JudgingArgument judgingArgument, String fileName, String pwd){
+        this.maxMemory = judgingArgument.getMemoryLimit();
+        this.maxCpuTime = judgingArgument.getTimeLimit();
+        this.maxRealTime = this.maxCpuTime * 2;
+        this.maxStack = this.maxMemory;
+        this.maxOutputSize = 1024 * 1024;
+        this.maxProcessNumber = 200;
+        this.exePath = String.format("%s/bin/%s", pwd, fileName);
+        this.inputPath = String.format("%s/file/in/%s.in", pwd, fileName);
+        this.outputPath = String.format("%s/file/out/%s.out", pwd, fileName);
+        this.errorPath = String.format("%s/file/error/%s.err", pwd, fileName);
+        this.logPath = String.format("%s/log/log.log", pwd);
+    }
     /**
      * 以毫秒计算
      */
@@ -42,19 +56,19 @@ public class TestParam {
      * 暂时用不上
      */
     @JsonIgnore
-    private Integer uid;
+    private Integer uid = 0;
 
     /**
      * 暂时用不上
      */
     @JsonIgnore
-    private Integer gid;
+    private Integer gid = 0;
 
     /**
-     * 暂时用不上，不知道干啥用
+     * 始终为1即可
      */
     @JsonIgnore
-    private Integer memoryLimitCheckOnly;
+    private Integer memoryLimitCheckOnly = 1;
 
     /**
      * 可执行文件路径
@@ -76,8 +90,4 @@ public class TestParam {
      * 日志路径
      */
     private String logPath;
-    /**
-     * 判题规则
-     */
-    private String seccompRuleName;
 }

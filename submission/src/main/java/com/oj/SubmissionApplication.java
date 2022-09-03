@@ -3,7 +3,7 @@ package com.oj;
 import com.oj.entity.SubmissionEntity;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
-import com.oj.mq.extractor.MyPartitionKeyExtractor;
+//import com.oj.mq.extractor.MyPartitionKeyExtractor;
 import com.oj.mq.producer.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

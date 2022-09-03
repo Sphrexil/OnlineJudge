@@ -1,12 +1,16 @@
 package com.oj.TestUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author zzy
  */
 @Data
-public class JsonTestParam {
+@AllArgsConstructor
+@NoArgsConstructor
+public class JudgingArgument {
     private Integer timeLimit;
     private Integer memoryLimit;
     private String codeType;
