@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
 /**
  * @author zzy
  */
@@ -15,10 +17,5 @@ public class JudgingArgument {
     private Integer memoryLimit;
     private String codeType;
     private String codeSrc;
-    private SingleCase[] testCases;
-}
-@Data
-class SingleCase{
-    String in;
-    String out;
+    private ArrayList<SingleCase> testCases = new ArrayList<>();
 }
