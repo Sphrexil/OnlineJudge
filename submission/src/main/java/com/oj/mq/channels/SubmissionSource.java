@@ -19,4 +19,9 @@ public interface SubmissionSource {
     MessageChannel firthOutput();
     @Output(SecondSubmissionOutput)
     MessageChannel secondOutput();
+
+    String OUTPUTTX = "outputTX";
+    @Output(OUTPUTTX)
+    MessageChannel outputTX();
+
 }

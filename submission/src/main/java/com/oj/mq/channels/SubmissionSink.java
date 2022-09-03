@@ -2,6 +2,7 @@ package com.oj.mq.channels;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.SubscribableChannel;
 
 public interface SubmissionSink {
 
@@ -9,7 +10,11 @@ public interface SubmissionSink {
     String SecondSubmissionInput = "SecondSubmissionInput";
 
     @Input(FirthSubmissionInput)
-    MessageChannel firthInput();
+    SubscribableChannel firthInput();
     @Input(SecondSubmissionInput)
-    MessageChannel secondInput();
+    SubscribableChannel secondInput();
+
+    String INPUTTX = "inputTX";
+    @Input(INPUTTX)
+    SubscribableChannel inputTX();
 }
