@@ -36,7 +36,7 @@ public class Judge {
         caseInWriter.write(in);
         caseInWriter.flush();caseInWriter.close();
         BufferedWriter caseOutWriter = new BufferedWriter(
-                new FileWriter(String.format("%s/file/out/%s.out", getPWD(), fileName)));
+                new FileWriter(String.format("%s/file/checker/%s.out", getPWD(), fileName)));
         caseInWriter.write(out);
         caseOutWriter.flush();caseOutWriter.close();
     }
