@@ -15,17 +15,17 @@ public class Judge {
         String fileName = MD5Utils.digest(src.getBytes(StandardCharsets.UTF_8));
         compileProgram(src, fileName);
         TestParam testParam = new TestParam(judgingArgument, fileName, getPWD());
-        for(int i = 0;i < judgingArgument.getTestCases().length;i ++){
+        log.info("rules " + testParam.toString());
+        for(int i = 0;i < judgingArgument.getTestCases().size();i ++){
             try {
-                writeCaseIO(judgingArgument.getTestCases()[i].in,
-                        judgingArgument.getTestCases()[i].out,
+                writeCaseIO(judgingArgument.getTestCases().get(i).getIn(),
+                        judgingArgument.getTestCases().get(i).getOut(),
                         fileName);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             TestResult testResult = testProgram(testParam);
             log.info(testResult.toString());
-            deleteTempFile(fileName);
         }
         deleteTempFile(fileName);
         return null;
@@ -35,15 +35,15 @@ public class Judge {
                 new FileWriter(String.format("%s/file/in/%s.in", getPWD(), fileName)));
         caseInWriter.write(in);
         caseInWriter.flush();caseInWriter.close();
+
         BufferedWriter caseOutWriter = new BufferedWriter(
                 new FileWriter(String.format("%s/file/checker/%s.out", getPWD(), fileName)));
-        caseInWriter.write(out);
+        caseOutWriter.write(out);
         caseOutWriter.flush();caseOutWriter.close();
     }
     private static void compileProgram(String src, String fileName) {
         Runtime runtime = Runtime.getRuntime();
-        Process process;
-        log.info(fileName);
+        log.info(String.format("%s/file/src/%s.cpp", getPWD(),fileName));
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(String.format("%s/file/src/%s.cpp", getPWD(),fileName)));
             out.write(src);
@@ -104,9 +104,9 @@ public class Judge {
     }
 
     private static void deleteTempFile(String fileName){
-        log.info(String.format("delete file %s", fileName));
         File exe = new File(String.format("%s/file/bin/%s", pwd, fileName));
         File cFile = new File(String.format("%s/file/src/%s.cpp", pwd, fileName));
+        log.info(String.format("try to delete file %s", fileName));
         boolean deleted = exe.delete();
         if(!deleted){
             log.warn(String.format("%s binary haven't been deleted", fileName));
@@ -134,8 +134,8 @@ public class Judge {
                         +"--log_path=%s "
                 ,
                 testParam.getMaxCpuTime(),
-                testParam.getMaxMemory(),
                 testParam.getMaxRealTime(),
+                testParam.getMaxMemory(),
                 testParam.getMaxStack(),
                 testParam.getMaxOutputSize(),
                 testParam.getMaxProcessNumber(),
@@ -168,6 +168,7 @@ public class Judge {
             }catch (IOException e){
                 throw new RuntimeException();
             }
+            log.info(pwd);
         }
         return pwd;
     }

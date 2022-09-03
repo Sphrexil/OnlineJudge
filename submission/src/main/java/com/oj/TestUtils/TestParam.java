@@ -10,17 +10,17 @@ import lombok.Data;
 @Data
 public class TestParam {
     public TestParam(JudgingArgument judgingArgument, String fileName, String pwd){
-        this.maxMemory = judgingArgument.getMemoryLimit();
+        this.maxMemory = judgingArgument.getMemoryLimit() * 1024 * 1024;
         this.maxCpuTime = judgingArgument.getTimeLimit();
         this.maxRealTime = this.maxCpuTime * 2;
         this.maxStack = this.maxMemory;
         this.maxOutputSize = 1024 * 1024;
         this.maxProcessNumber = 200;
-        this.exePath = String.format("%s/bin/%s", pwd, fileName);
+        this.exePath = String.format("%s/file/bin/%s", pwd, fileName);
         this.inputPath = String.format("%s/file/in/%s.in", pwd, fileName);
         this.outputPath = String.format("%s/file/out/%s.out", pwd, fileName);
         this.errorPath = String.format("%s/file/error/%s.err", pwd, fileName);
-        this.logPath = String.format("%s/log/log.log", pwd);
+        this.logPath = String.format("%s/file/log.log", pwd);
     }
     /**
      * 以毫秒计算
