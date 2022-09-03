@@ -34,7 +34,7 @@ public class SenderService {
     private SubmissionSource submissionSource;
     @Autowired
     RedisCache redisCache;
-    Object res = null;
+    SubmissionDto res = null;
     @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
 //        boolean flagTest = source.output().send(MessageBuilder.withPayload(msg).build());

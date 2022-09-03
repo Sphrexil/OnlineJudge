@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
@@ -19,43 +17,16 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
+
 
 
 @EnableConfigurationProperties(CacheProperties.class)
 @Configuration
 @EnableCaching
-public class MyCacheConfig extends CachingConfigurerSupport {
+public class MyCacheConfig {
 
     // @Autowired
     // public CacheProperties cacheProperties;
-
-    /**
-     * 配置文件的配置没有用上
-     *
-     * @return
-     */
-    @Bean
-    public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
-
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-        // config = config.entryTtl();
-        CacheProperties.Redis redisProperties = cacheProperties.getRedis();
-        //将配置文件中所有的配置都生效
-        if (redisProperties.getTimeToLive() != null) {
-            config = config.entryTtl(redisProperties.getTimeToLive());
-        }
-        if (redisProperties.getKeyPrefix() != null) {
-            config = config.prefixKeysWith(redisProperties.getKeyPrefix());
-        }
-        if (!redisProperties.isCacheNullValues()) {
-            config = config.disableCachingNullValues();
-        }
-        if (!redisProperties.isUseKeyPrefix()) {
-            config = config.disableKeyPrefix();
-        }
-        return config;
-    }
 
     /**
      * 自定义配置 RedisTemplate
@@ -65,7 +36,7 @@ public class MyCacheConfig extends CachingConfigurerSupport {
      * @Primary注解 默认加载此配置 忽略 RedisAutoConfiguration 的 stringRedisTemplate 配置
      */
     @Bean
-    @Primary
+//    @Primary
     @SuppressWarnings("all")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         // 我们为了自己开发方便，一般直接使用 <String, Object>
@@ -99,13 +70,27 @@ public class MyCacheConfig extends CachingConfigurerSupport {
      * @return RedisCacheManager
      */
     @Bean
-    public RedisCacheManager redisCacheManager(RedisTemplate redisTemplate) {
+    public RedisCacheManager redisCacheManager(RedisTemplate redisTemplate, CacheProperties cacheProperties) {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisTemplate.getConnectionFactory());
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getValueSerializer()));
         // 默认过期时间
-        redisCacheConfiguration.entryTtl(Duration.ofDays(30));
-        return new RedisCacheManager(redisCacheWriter, redisCacheConfiguration);
+
+        CacheProperties.Redis redisProperties = cacheProperties.getRedis();
+        //将配置文件中所有的配置都生效
+        if (redisProperties.getTimeToLive() != null) {
+            config = config.entryTtl(redisProperties.getTimeToLive());
+        }
+        if (redisProperties.getKeyPrefix() != null) {
+            config = config.prefixKeysWith(redisProperties.getKeyPrefix());
+        }
+        if (!redisProperties.isCacheNullValues()) {
+            config = config.disableCachingNullValues();
+        }
+        if (!redisProperties.isUseKeyPrefix()) {
+            config = config.disableKeyPrefix();
+        }
+        return new RedisCacheManager(redisCacheWriter, config);
     }
 
 }
