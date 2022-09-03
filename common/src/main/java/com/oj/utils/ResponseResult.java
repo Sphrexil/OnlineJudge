@@ -127,7 +127,10 @@ public class ResponseResult<T> implements Serializable {
         M t = JSON.parseObject(jsonString, typeReference);
         return t;
     }
-    public T getData() { return data; }
+
+    public T getData() {
+        return data;
+    }
 
     public void setData(T data) {
         this.data = data;

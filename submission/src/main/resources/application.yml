@@ -35,50 +35,57 @@ spring:
     validate-on-migrate: true
     # 当迁移发现数据库非空且存在没有元数据的表时，自动执行基准迁移，新建schema_version表
     baseline-on-migrate: true
-
+  cache:
+    type: redis
   cloud:
     nacos:
       discovery:
         server-addr: localhost:8848
   #####################################rocketmq配置#####################################
-
     stream:
+      instance-count: 10
+      instance-index: 0
       rocketmq:
         binder:
           name-server: 192.168.1.129:9876
-    #生产者配置
+          enable-msg-trace: true
+        bindings:
+          outputTX:
+            producer:
+              transactional: true
+              group: Tx-Group
+          inputTX:
+            consumer:
+              delayLevelWhenNextConsume: -1
+              group: Tx-Group
+          #####
       bindings:
-        output:
-          #测试通道
-          destination: test-topic  #  topic位置
-          contentType: text/plain  #  消息类型
-          group: test-group #  生产者组别
-          #使用通道
         FirthSubmissionOutput:
-          destination: firth-topic  #  topic位置
-          contentType: text/plain  #  消息类型
-          group: firth-group #  生产者组别
-        SecondSubmissionOutput:
-          destination: second-topic  #  topic位置
-          contentType: text/plain  #  消息类型
-          group: second-group #  生产者组别
-    #消费者配置
-        #测试通道
-        input:
-          destination: test-topic  #  topic位置
+          group: test-group #  生产者组别
+          destination: qwe-topic  #  topic位置
+          contentType: application/json #  消息类型
+        FirthSubmissionInput:
+          destination: qwe-topic  #  topic位置
           contentType: text/plain  #  消息类型
           group: test-group #  消费者组别
-        #使用通道
-        FirthSubmissionInput:
-          destination: firth-topic  #  topic位置
+   ###################################
+        SecondSubmissionOutput:
+          destination: abc-topic  #  topic位置
           contentType: text/plain  #  消息类型
-          group: firth-group #  消费者组别
+          group: first-group #  生产者组别
         SecondSubmissionInput:
-          destination: second-topic  #  topic位置
+          destination: abc-topic  #  topic位置
           contentType: text/plain  #  消息类型
-          group: second-group #  消费者组别
-
-
+          group: first-group #  消费者组别
+    ###################################
+        outputTX:
+          destination: TX-topic
+          contentType: application/json
+          group: TX-group
+        inputTX:
+          destination: TX-topic
+          contentType: application/json
+          group: TX-group
   #####################################mybatis-plus配置#####################################
 mybatis-plus:
   configuration:

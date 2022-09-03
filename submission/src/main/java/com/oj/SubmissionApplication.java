@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Sink;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 @EnableBinding(value = {SubmissionSource.class, SubmissionSink.class})
+@EnableCaching
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.oj.feign")
 public class SubmissionApplication {
