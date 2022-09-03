@@ -1,14 +1,14 @@
-package com.oj.mq.consumer;
+package com.oj.mq.transactionListener;
 
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
 import org.springframework.messaging.Message;
 
-//MQ接收，并根据结果运行内部逻辑
-@SuppressWarnings("all")
-@RocketMQTransactionListener(txProducerGroup = "Tx-Group", corePoolSize = 5, maximumPoolSize = 10)
-public class TransactionListenerImpl implements RocketMQLocalTransactionListener {
+import java.util.Objects;
+
+@RocketMQTransactionListener(txProducerGroup = "res-group", corePoolSize = 5, maximumPoolSize = 10)
+public class ResTsListener implements RocketMQLocalTransactionListener {
     /**
      * 执行本地事务：也就是执行本地业务逻辑
      *
@@ -18,17 +18,12 @@ public class TransactionListenerImpl implements RocketMQLocalTransactionListener
      */
     @Override
     public RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {
-        Object num = msg.getHeaders().get("test");
-
-        if ("1".equals(num)) {
-            System.out.println("executer: " + new String((byte[]) msg.getPayload()) + " unknown");
-            return RocketMQLocalTransactionState.UNKNOWN;
-        }
-        else if ("2".equals(num)) {
-            System.out.println("executer: " + new String((byte[]) msg.getPayload()) + " rollback");
+        // 此处进行对消息的过滤，让指定的消息回滚，让指定消息提交
+        if (Objects.isNull(msg)) {
             return RocketMQLocalTransactionState.ROLLBACK;
         }
-        System.out.println("executer: " + new String((byte[]) msg.getPayload()) + " commit");
+        // RocketMQLocalTransactionState.UNKNOWN会进入到二次确认环节
+        // 可以在此处加上二次确认的条件
         return RocketMQLocalTransactionState.COMMIT;
     }
 
@@ -40,6 +35,7 @@ public class TransactionListenerImpl implements RocketMQLocalTransactionListener
      */
     @Override
     public RocketMQLocalTransactionState checkLocalTransaction(Message msg) {
+        // 这里进行二次确认
         System.out.println("check: " + new String((byte[]) msg.getPayload()));
         return RocketMQLocalTransactionState.COMMIT;
     }

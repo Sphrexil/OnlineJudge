@@ -18,4 +18,5 @@ public class SubmissionDto {
     private String code;
     private Integer timeLimit;
     private Integer memoryLimit;
+    private String language;
 }

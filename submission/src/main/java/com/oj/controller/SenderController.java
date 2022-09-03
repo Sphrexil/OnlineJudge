@@ -1,15 +1,12 @@
 package com.oj.controller;
 
 import com.oj.entity.SubmissionEntity;
-import com.oj.mq.channels.SubmissionSource;
-import com.oj.mq.producer.SenderService;
-import com.oj.mq.transaction.SendTx;
+import com.oj.mq.test.TestService;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * description: SenderController
@@ -19,21 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 public class SenderController {
-    @Autowired
-    SendTx service;
-    @Autowired
-    SenderService senderService;
 
-    @RequestMapping("/sendTx")
-    public void sendTx() throws Exception {
-        SubmissionEntity submissionEntity = new SubmissionEntity();
-        submissionEntity.setDelFlag(0);
-        submissionEntity.setAuthor(5555L);
-        service.sendTransactionalMsg(submissionEntity, 1);
-        service.sendTransactionalMsg(submissionEntity, 2);
-        service.sendTransactionalMsg(submissionEntity, 3);
-        service.sendTransactionalMsg(submissionEntity, 4);
-    }
+    @Autowired
+    TestService senderService;
 
     @RequestMapping("/send")
     @ResponseBody

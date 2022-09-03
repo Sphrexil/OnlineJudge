@@ -1,4 +1,4 @@
-package com.oj.exceptions.handler;
+package com.oj.exceptions;
 
 
 import com.oj.enums.ResultCode;

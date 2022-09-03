@@ -7,7 +7,7 @@ server:
 spring:
   application:
     name: submission
-
+  # 兼容swagger
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -43,8 +43,6 @@ spring:
         server-addr: localhost:8848
   #####################################rocketmq配置#####################################
     stream:
-      instance-count: 10
-      instance-index: 0
       rocketmq:
         binder:
           name-server: 192.168.1.129:9876
@@ -73,44 +71,43 @@ spring:
 #          enabled = true;
 #          pullTimeout = 10000L;
 #          boolean fromStore;
-          outputTX:
+          ResOutput:
             producer:
               transactional: true
-              group: Tx-Group
-          inputTX:
+              group: res-group
+          Resinput:
             consumer:
               delayLevelWhenNextConsume: -1
-              group: Tx-Group
+              group: res-group
+          SubmissionOutput:
+            producer:
+              transactional: true
+              group: sub-group
+          SubmissionInput:
+            consumer:
+              delayLevelWhenNextConsume: -1
+              group: sub-group
           ##### 配置基本队列配置在stream->bindings下面配
           #基本属性配置 见下官文
           #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder
       bindings:
-        FirthSubmissionOutput:
-          group: test-group #  生产者组别
-          destination: qwe-topic  #  topic位置
-          contentType: application/json #  消息类型
-        FirthSubmissionInput:
-          destination: qwe-topic  #  topic位置
+    ###########开发测试组################
+        SubmissionOutput:
+          destination: sub-topic  #  topic位置
           contentType: application/json  #  消息类型
-          group: test-group #  消费者组别
-   ###################################
-        SecondSubmissionOutput:
-          destination: abc-topic  #  topic位置
+          group: sub-group #  生产者组别
+        SubmissionInput:
+          destination: sub-topic  #  topic位置
           contentType: application/json  #  消息类型
-          group: first-group #  生产者组别
-        SecondSubmissionInput:
-          destination: abc-topic  #  topic位置
-          contentType: application/json  #  消息类型
-          group: first-group #  消费者组别
-    ###################################
-        outputTX:
-          destination: TX-topic
+          group: sub-group #  生产者组别
+        ResOutput:
+          destination: res-topic
           contentType: application/json
-          group: TX-group
-        inputTX:
-          destination: TX-topic
+          group: res-group
+        ResInput:
+          destination: res-topic
           contentType: application/json
-          group: TX-group
+          group: res-group
   #####################################mybatis-plus配置#####################################
 mybatis-plus:
   configuration:

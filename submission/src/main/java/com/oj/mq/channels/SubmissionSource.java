@@ -12,16 +12,20 @@ import org.springframework.messaging.MessageChannel;
 
 public interface SubmissionSource {
 
-    String FirthSubmissionOutput = "FirthSubmissionOutput";
-    String SecondSubmissionOutput = "SecondSubmissionOutput";
+    // 环境测试组
+//    String FirthSubmissionOutput = "FirthSubmissionOutput";
+//    String SecondSubmissionOutput = "SecondSubmissionOutput";
+//
+//    @Output(FirthSubmissionOutput)
+//    MessageChannel firthOutput();
+//    @Output(SecondSubmissionOutput)
+//    MessageChannel secondOutput();
+    // 开发测试组
+    String SubmissionOutput = "SubmissionOutput";
+    @Output(SubmissionOutput)
+    MessageChannel submissionOutput();
 
-    @Output(FirthSubmissionOutput)
-    MessageChannel firthOutput();
-    @Output(SecondSubmissionOutput)
-    MessageChannel secondOutput();
-
-    String OUTPUTTX = "outputTX";
-    @Output(OUTPUTTX)
-    MessageChannel outputTX();
-
+    String ResOut = "ResOutput";
+    @Output(ResOut)
+    MessageChannel resOut();
 }

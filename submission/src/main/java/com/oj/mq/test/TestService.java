@@ -1,6 +1,5 @@
-package com.oj.mq.producer;
+package com.oj.mq.test;
 
-import com.alibaba.fastjson.JSON;
 import com.oj.entity.SubmissionEntity;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class SenderService {
+public class TestService {
 
 
 
@@ -34,28 +33,32 @@ public class SenderService {
     private SubmissionSource submissionSource;
     @Autowired
     RedisCache redisCache;
-    SubmissionDto res = null;
+    SubmissionEntity res = null;
     @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
-//        boolean flagTest = source.output().send(MessageBuilder.withPayload(msg).build());
 
         MessageBuilder<SubmissionEntity> message = MessageBuilder.withPayload(msg);
-        boolean flag1 = submissionSource.firthOutput().send(message.build());
-//        boolean flag2 = submissionSource.secondOutput().send(message.build());
-//        System.out.println("消息发送"+(flagTest?"flagTest成功":"flagTest失败")+"了");
-        while (res == null) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        boolean flag1 = submissionSource.submissionOutput().send(message.build());
+        if (flag1) {
+            while (res == null) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         redisCache.setCacheObject("res", ResponseResult.okResult(res));
         return ResponseResult.okResult(res);
-//        System.out.println("消息发送"+(flag2?"flag2成功":"flag2失败")+"了");
     }
-    @StreamListener(SubmissionSink.SecondSubmissionInput)
-    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
+    @StreamListener(SubmissionSink.SubmissionInput)
+    public void receive(@Payload SubmissionEntity msg) {
+        System.out.println("消息接收成功:"+msg);
+        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
+    }
+    @StreamListener(SubmissionSink.ResInput)
+    public void setReceiveMsg(@Payload SubmissionEntity receiveMsg) {
+        System.out.println("消息接收成功:"+receiveMsg);
         res = receiveMsg;
     }
 }
