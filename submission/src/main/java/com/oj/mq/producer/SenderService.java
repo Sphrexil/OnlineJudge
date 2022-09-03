@@ -1,20 +1,22 @@
 package com.oj.mq.producer;
 
+import com.alibaba.fastjson.JSON;
 import com.oj.entity.SubmissionEntity;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
 
 
+import com.oj.pojo.dto.SubmissionDto;
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * description: SenderService
@@ -31,10 +33,8 @@ public class SenderService {
     @Autowired
     private SubmissionSource submissionSource;
     @Autowired
-    private AtomicInteger index;
-    @Autowired
     RedisCache redisCache;
-    String res = null;
+    Object res = null;
     @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
 //        boolean flagTest = source.output().send(MessageBuilder.withPayload(msg).build());
@@ -55,7 +55,7 @@ public class SenderService {
 //        System.out.println("消息发送"+(flag2?"flag2成功":"flag2失败")+"了");
     }
     @StreamListener(SubmissionSink.SecondSubmissionInput)
-    public void setReceiveMsg(String receiveMsg) {
+    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
         res = receiveMsg;
     }
 }

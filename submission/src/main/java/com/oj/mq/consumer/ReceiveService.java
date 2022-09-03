@@ -3,6 +3,7 @@ package com.oj.mq.consumer;
 
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
+import com.oj.pojo.dto.SubmissionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.support.MessageBuilder;
@@ -24,7 +25,12 @@ public class ReceiveService {
     @StreamListener(value = SubmissionSink.FirthSubmissionInput)
     public void receive1(String msg) {
         System.out.println("接收到的消息1为:"+msg);
-        MessageBuilder<Object> builder = MessageBuilder.withPayload("消息处理完成");
+        SubmissionDto submissionDto = new SubmissionDto();
+        submissionDto.setTestCase("hhh");
+        submissionDto.setCode("wwww");
+        submissionDto.setMemoryLimit(5566);
+        submissionDto.setTimeLimit(44);
+        MessageBuilder<SubmissionDto> builder = MessageBuilder.withPayload(submissionDto);
         source.secondOutput().send(builder.build());
     }
 }

@@ -91,16 +91,16 @@ spring:
           contentType: application/json #  消息类型
         FirthSubmissionInput:
           destination: qwe-topic  #  topic位置
-          contentType: text/plain  #  消息类型
+          contentType: application/json  #  消息类型
           group: test-group #  消费者组别
    ###################################
         SecondSubmissionOutput:
           destination: abc-topic  #  topic位置
-          contentType: text/plain  #  消息类型
+          contentType: application/json  #  消息类型
           group: first-group #  生产者组别
         SecondSubmissionInput:
           destination: abc-topic  #  topic位置
-          contentType: text/plain  #  消息类型
+          contentType: application/json  #  消息类型
           group: first-group #  消费者组别
     ###################################
         outputTX:
