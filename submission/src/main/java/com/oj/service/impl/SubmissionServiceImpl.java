@@ -88,7 +88,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         boolean flag = submissionSource.submissionOutput().send(MessageBuilder.withPayload(submissionDto).build());
         if (flag) {
             int count = 0;
-            while (res == null) {
+            while (this.res == null) {
                 try {
                     // 这里可以将查的时间缩短点，但是有可能的是这边发成功了，但是发回来的时候失败了
                     if (count > 10) {
@@ -101,20 +101,20 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
                 }
             }
         }
-        return ResponseResult.okResult(submissionDto);
+        return ResponseResult.okResult(this.res);
     }
 
     // 接收第一次的消息和回调消息的示例如下
-    private SubmissionEntity res = null; // 这里看自己需要什么类型的返回结果
+    private SubmissionDto res = null; // 这里看自己需要什么类型的返回结果
     /* 第一次消息接收，应该将这个放到judge里面去，可以用一个变量接收 */
     @StreamListener(SubmissionSink.SubmissionInput)
-    public void receive(@Payload SubmissionEntity msg) {
+    public void receive(@Payload SubmissionDto msg) {
         System.out.println("消息接收成功:"+msg);
         submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
     }
     /* 回调消息接收 */
     @StreamListener(SubmissionSink.ResInput)
-    public void setReceiveMsg(@Payload SubmissionEntity receiveMsg) {
+    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
         System.out.println("消息接收成功:"+receiveMsg);
         res = receiveMsg;
     }
