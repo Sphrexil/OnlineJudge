@@ -16,8 +16,6 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.oj.feign")
 public class SubmissionApplication {
-
-
     public static void main(String[] args) {
         SpringApplication.run(SubmissionApplication.class, args);
     }
