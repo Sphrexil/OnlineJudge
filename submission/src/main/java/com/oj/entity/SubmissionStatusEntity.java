@@ -46,12 +46,10 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *	内存使用
 	 */
-	@NotNull(message = "不能没有内存限制")
 	private Integer memoryUsage;
 	/**
 	 *	答题时间
 	 */
-	@NotNull(message = "不能没有时间限制")
 	private Integer timeUsage;
 	/**
 	 *	作者
@@ -62,6 +60,7 @@ public class SubmissionStatusEntity implements Serializable {
 	 *	逻辑删除
 	 */
 	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
 	private Integer delFlag;
 
 	/**
@@ -75,4 +74,7 @@ public class SubmissionStatusEntity implements Serializable {
 	 */
 	@TableField(exist = false)
 	private String testCase;
+
+	@TableField(exist = false)
+	private Boolean isDebug;
 }

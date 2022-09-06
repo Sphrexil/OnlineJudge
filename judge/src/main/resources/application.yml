@@ -75,14 +75,6 @@ spring:
             producer:
               transactional: true
               group: res-group
-#          Resinput:
-#            consumer:
-#              delayLevelWhenNextConsume: -1
-#              group: res-group
-#          SubmissionOutput:
-#            producer:
-#              transactional: true
-#              group: sub-group
           SubmissionInput:
             consumer:
               delayLevelWhenNextConsume: -1
@@ -92,10 +84,6 @@ spring:
           #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder
       bindings:
     ###########开发测试组################
-#        SubmissionOutput:
-#          destination: sub-topic  #  topic位置
-#          contentType: application/json  #  消息类型
-#          group: sub-group #  生产者组别
         SubmissionInput:
           destination: sub-topic  #  topic位置
           contentType: application/json  #  消息类型
@@ -104,10 +92,6 @@ spring:
           destination: res-topic
           contentType: application/json
           group: res-group
-#        ResInput:
-#          destination: res-topic
-#          contentType: application/json
-#          group: res-group
   #####################################mybatis-plus配置#####################################
 mybatis-plus:
   configuration:

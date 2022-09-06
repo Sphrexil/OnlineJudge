@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.oj.TestUtils.CompileException;
 import com.oj.TestUtils.Judge;
 import com.oj.TestUtils.JudgingArgument;
+import com.oj.mq.channels.JudgeSink;
+import com.oj.mq.channels.JudgeSource;
 import com.oj.pojo.vo.TestResultVo;
 import com.oj.dao.ResultDao;
 import com.oj.entity.ResultEntity;
-import com.oj.mq.channels.SubmissionSink;
-import com.oj.mq.channels.SubmissionSource;
 import com.oj.pojo.dto.SubmissionDto;
 import com.oj.pojo.vo.ResultVo;
 import com.oj.service.ResultService;
@@ -34,17 +34,17 @@ import java.util.Date;
 @Slf4j
 public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> implements ResultService {
 
-    private final SubmissionSource submissionSource;
+    private final JudgeSource judgeSource;
     final RedisCache redisCache;
 
     @Autowired
-    public ResultServiceImpl(SubmissionSource submissionSource, RedisCache redisCache) {
-        this.submissionSource = submissionSource;
+    public ResultServiceImpl(JudgeSource judgeSource, RedisCache redisCache) {
+        this.judgeSource = judgeSource;
         this.redisCache = redisCache;
     }
 
     @Override
-    @StreamListener(SubmissionSink.SubmissionInput)
+    @StreamListener(JudgeSink.SubmissionInput)
     public void judge(@Payload SubmissionDto msg) {
         log.info("消息接收成功{}",msg);
         ResultVo resultVo = new ResultVo();;
@@ -55,7 +55,7 @@ public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> impl
             resultEntity.getResultOfCase().add(testResultVo);
         }catch (CompileException e){
             resultVo = new ResultVo(0, 0, e.getMessage(), "COMPILE_ERROR");
-            boolean flag = submissionSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
+            boolean flag = judgeSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
             log.info("回调消息发送状态 {}",flag);
             return;
         } catch (IOException e) {
@@ -93,7 +93,7 @@ public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> impl
             resultVo.setStatus("ACCEPT");
         }
         log.info("final result of test {}", resultVo);
-        boolean flag = submissionSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
+        boolean flag = judgeSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
         log.info("回调消息发送状态{}",flag);
     }
 }

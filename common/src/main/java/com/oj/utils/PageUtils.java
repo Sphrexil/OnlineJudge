@@ -3,11 +3,13 @@ package com.oj.utils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 public class PageUtils {
 
     private static final long serialVersionUID = 1L;

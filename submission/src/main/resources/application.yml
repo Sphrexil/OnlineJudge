@@ -71,10 +71,6 @@ spring:
 #          enabled = true;
 #          pullTimeout = 10000L;
 #          boolean fromStore;
-          ResOutput:
-            producer:
-              transactional: true
-              group: res-group
           Resinput:
             consumer:
               delayLevelWhenNextConsume: -1
@@ -82,10 +78,6 @@ spring:
           SubmissionOutput:
             producer:
               transactional: true
-              group: sub-group
-          SubmissionInput:
-            consumer:
-              delayLevelWhenNextConsume: -1
               group: sub-group
           ##### 配置基本队列配置在stream->bindings下面配
           #基本属性配置 见下官文
@@ -96,14 +88,6 @@ spring:
           destination: sub-topic  #  topic位置
           contentType: application/json  #  消息类型
           group: sub-group #  生产者组别
-        SubmissionInput:
-          destination: sub-topic  #  topic位置
-          contentType: application/json  #  消息类型
-          group: sub-group #  生产者组别
-        ResOutput:
-          destination: res-topic
-          contentType: application/json
-          group: res-group
         ResInput:
           destination: res-topic
           contentType: application/json
@@ -119,7 +103,6 @@ mybatis-plus:
       logic-delete-value: 0
       logic-not-delete-value: 1
       id-type: auto
-
   #日志
 logging:
   level:

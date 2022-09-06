@@ -45,6 +45,7 @@ public class ResultEntity  {
     private Long relatedSubmission;
 
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer isDel;
 
     @TableField(fill = FieldFill.INSERT)

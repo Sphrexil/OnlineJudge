@@ -10,12 +10,8 @@ import org.springframework.messaging.MessageChannel;
  * version: 1.0
  */
 
-public interface SubmissionSource {
-
-
-    // 开发测试组
-    String SubmissionOutput = "SubmissionOutput";
-    @Output(SubmissionOutput)
-    MessageChannel submissionOutput();
-
+public interface JudgeSource {
+    String ResOut = "ResOutput";
+    @Output(ResOut)
+    MessageChannel resOut();
 }
