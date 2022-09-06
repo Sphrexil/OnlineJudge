@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -24,7 +24,7 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *	提交代码
 	 */
-	@NotNull
+	@NotBlank(message = "提交代码不能为空和空串")
 	private String code;
 	/**
 	 *	创建时间

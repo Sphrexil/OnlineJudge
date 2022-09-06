@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,8 +16,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UerProblemVo implements Serializable {
+public class UerProblemListVo implements Serializable {
+    @NotNull(message = "作者不能为空")
     private Long author;
+
     private Long problemId;
+
     private String language;
+
+    private Integer pageNum;
+
+    private Integer pageSize;
 }

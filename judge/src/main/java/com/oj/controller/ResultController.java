@@ -1,7 +1,8 @@
 package com.oj.controller;
 
 
-import org.springframework.stereotype.Controller;
+
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * description: SenderController
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Controller;
  * author: zhenyu
  * version: 1.0
  */
-@Controller
+@RestController
 public class ResultController {
 
 

@@ -1,12 +1,17 @@
 package com.oj.entity;
 
 
-import java.io.Serializable;
+
+import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.*;
+import com.oj.pojo.vo.ResultVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * (Result)表实体类
  *
@@ -23,17 +28,22 @@ public class ResultEntity  {
     private Long id;
 
 
-    private String resultOfSubmission;
+    private ResultVo resultOfCase;
 
-    private String relatedUser;
+    @NotNull
+    private Long relatedUser;
 
-    private Integer relatedProblem;
+    @NotNull
+    private Long relatedProblem;
 
-    private Integer relatedSubmission;
+    @NotNull
+    private Long relatedSubmission;
 
+    @TableLogic
     private Integer isDel;
 
-    private Integer createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
 
 }
 
