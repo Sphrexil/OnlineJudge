@@ -2,10 +2,11 @@ package com.oj.entity;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.oj.pojo.vo.ResultVo;
+import com.oj.pojo.vo.TestResultVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,11 +25,15 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @TableName("result")
 public class ResultEntity  {
+    public void getFinalResult(){
+        for(TestResultVo i : resultOfCase){
+
+        }
+    }
     @TableId
     private Long id;
 
-
-    private ResultVo resultOfCase;
+    private ArrayList<TestResultVo> resultOfCase;
 
     @NotNull
     private Long relatedUser;
@@ -44,6 +49,5 @@ public class ResultEntity  {
 
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
-
 }
 

@@ -1,6 +1,7 @@
 package com.oj.controller;
 
 import com.oj.entity.SubmissionEntity;
+import com.oj.entity.SubmissionStatusEntity;
 import com.oj.mq.test.SubTestService;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.oj.dao;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.oj.entity.SubmissionEntity;
+import com.oj.entity.SubmissionStatusEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2022-08-27 16:37:04
  */
 @Mapper
-public interface SubmissionDao extends BaseMapper<SubmissionEntity> {
+public interface SubmissionDao extends BaseMapper<SubmissionStatusEntity> {
 
 }

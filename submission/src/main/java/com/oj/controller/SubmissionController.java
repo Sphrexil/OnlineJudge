@@ -3,7 +3,7 @@ package com.oj.controller;
 import java.util.Arrays;
 
 
-import com.oj.entity.SubmissionEntity;
+import com.oj.entity.SubmissionStatusEntity;
 import com.oj.pojo.vo.UerProblemListVo;
 import com.oj.service.SubmissionService;
 import com.oj.utils.ResponseResult;
@@ -20,7 +20,7 @@ public class SubmissionController {
     private SubmissionService submissionService;
 
     @PostMapping("/submit")
-    public ResponseResult submit(@Valid @RequestBody SubmissionEntity submission) {
+    public ResponseResult submit(@Valid @RequestBody SubmissionStatusEntity submission) {
 
         return submissionService.submit(submission);
     }
@@ -40,7 +40,7 @@ public class SubmissionController {
      */
     @GetMapping("/info/{id}")
     public ResponseResult info(@PathVariable("id") Long id) {
-        SubmissionEntity submission = submissionService.getById(id);
+        SubmissionStatusEntity submission = submissionService.getById(id);
 
         return ResponseResult.okResult(submission);
     }
@@ -49,7 +49,7 @@ public class SubmissionController {
      * 保存
      */
     @PostMapping("/save")
-    public ResponseResult save(@RequestBody SubmissionEntity submission) {
+    public ResponseResult save(@RequestBody SubmissionStatusEntity submission) {
         submissionService.save(submission);
 
         return ResponseResult.okResult();
@@ -59,7 +59,7 @@ public class SubmissionController {
      * 修改
      */
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody SubmissionEntity submission) {
+    public ResponseResult update(@RequestBody SubmissionStatusEntity submission) {
         submissionService.updateById(submission);
 
         return ResponseResult.okResult();

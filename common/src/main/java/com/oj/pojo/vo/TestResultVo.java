@@ -1,14 +1,17 @@
-package com.oj.TestUtils;
+package com.oj.pojo.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author zzy
  */
 @Data
-public class TestResult {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TestResultVo {
 
     @JsonProperty("cpu_time")
     private Integer cpuTime;

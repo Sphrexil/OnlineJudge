@@ -1,8 +1,12 @@
 package com.oj.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oj.TestUtils.SingleCase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 
 /**
  * description: SubmissionVo

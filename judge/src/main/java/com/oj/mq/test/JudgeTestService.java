@@ -38,15 +38,4 @@ public class JudgeTestService {
         this.submissionSource = submissionSource;
         this.redisCache = redisCache;
     }
-
-    @StreamListener(SubmissionSink.SubmissionInput)
-    public void judge(@Payload SubmissionDto msg) {
-        log.info("消息接收成功{}",msg);
-        ResultVo resultVo = new ResultVo(200, 300, "NullGirlfriendException", "Accepted");
-        Date date = new Date();
-        ResultEntity resultEntity = new ResultEntity(1L, resultVo, 5L, 1L, 2L, 1, date);
-        // 存入数据库
-        boolean flag = submissionSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
-        log.info("回调消息发送状态{}",flag);
-    }
 }

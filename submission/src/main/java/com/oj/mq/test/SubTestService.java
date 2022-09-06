@@ -1,6 +1,7 @@
 package com.oj.mq.test;
 
 import com.oj.entity.SubmissionEntity;
+import com.oj.entity.SubmissionStatusEntity;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
 
@@ -9,11 +10,8 @@ import com.oj.pojo.vo.ResultVo;
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
@@ -44,7 +42,6 @@ public class SubTestService {
 
 //    @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
-
         MessageBuilder<SubmissionEntity> message = MessageBuilder.withPayload(msg);
         boolean flag1 = submissionSource.submissionOutput().send(message.build());
         if (flag1) {
@@ -56,8 +53,6 @@ public class SubTestService {
                 }
             }
         }
-
-        redisCache.setCacheObject("res", ResponseResult.okResult(res));
         return ResponseResult.okResult(res);
     }
 

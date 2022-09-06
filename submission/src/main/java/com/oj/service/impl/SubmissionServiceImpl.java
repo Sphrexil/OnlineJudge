@@ -5,7 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.oj.dao.SubmissionDao;
-import com.oj.entity.SubmissionEntity;
+import com.oj.entity.SubmissionStatusEntity;
 import com.oj.feign.ProblemFeignService;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
@@ -17,7 +17,6 @@ import com.oj.utils.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
@@ -28,7 +27,7 @@ import java.util.Objects;
 
 
 @Service
-public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, SubmissionEntity> implements SubmissionService {
+public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, SubmissionStatusEntity> implements SubmissionService {
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
     @Autowired
     private ProblemFeignService problemFeignService;
@@ -48,14 +47,14 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         Integer pageNum = uerProblemListVo.getPageNum();
         Integer pageSize = uerProblemListVo.getPageSize();
 
-        LambdaQueryWrapper<SubmissionEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SubmissionEntity::getAuthor, author)
+        LambdaQueryWrapper<SubmissionStatusEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SubmissionStatusEntity::getAuthor, author)
                     // 用户可能会选择查询自己所有的提交记录
-                    .eq(Objects.nonNull(problemId), SubmissionEntity::getProblemId, problemId)
+                    .eq(Objects.nonNull(problemId), SubmissionStatusEntity::getProblemId, problemId)
                     // 用户可能会选择查询具体语言语言
-                    .eq(Objects.nonNull(language), SubmissionEntity::getLanguage, language);
+                    .eq(Objects.nonNull(language), SubmissionStatusEntity::getLanguage, language);
         // TODO 分页，需要根据需求封装vo返回
-        IPage<SubmissionEntity> submissionIPage = PageUtils.getPage(pageNum, pageSize, SubmissionEntity.class);
+        IPage<SubmissionStatusEntity> submissionIPage = PageUtils.getPage(pageNum, pageSize, SubmissionStatusEntity.class);
         page(submissionIPage, queryWrapper);
         PageUtils pageData = new PageUtils(submissionIPage);
 
@@ -63,7 +62,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     }
 
     @Override
-    public ResponseResult submit(SubmissionEntity submission) {
+    public ResponseResult submit(SubmissionStatusEntity submission) {
 
         Long problemId = submission.getProblemId();
         String code = submission.getCode();
