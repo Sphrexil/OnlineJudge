@@ -12,24 +12,23 @@ import com.oj.mq.channels.SubmissionSource;
 import com.oj.pojo.dto.SubmissionDto;
 import com.oj.pojo.vo.UerProblemVo;
 import com.oj.service.SubmissionService;
-import com.oj.utils.BeanCopyUtils;
 import com.oj.utils.PageUtils;
 import com.oj.utils.ResponseResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 
 
 @Service
 public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, SubmissionEntity> implements SubmissionService {
-
+    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
     @Autowired
     private ProblemFeignService problemFeignService;
     @Autowired
@@ -109,16 +108,17 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
 
     // 接收第一次的消息和回调消息的示例如下
     private SubmissionDto res = null; // 这里看自己需要什么类型的返回结果
-//    /* 第一次消息接收，应该将这个放到judge里面去，可以用一个变量接收 */
-//    @StreamListener(SubmissionSink.SubmissionInput)
-//    public void receive(@Payload SubmissionDto msg) {
-//        System.out.println("消息接收成功:"+msg);
-//        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
-//    }
-//    /* 回调消息接收 */
-//    @StreamListener(SubmissionSink.ResInput)
-//    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
-//        System.out.println("消息接收成功:"+receiveMsg);
-//        res = receiveMsg;
-//    }
+    /* 第一次消息接收，应该将这个放到judge里面去，可以用一个变量接收 */
+    @StreamListener(SubmissionSink.SubmissionInput)
+    public void receive(@Payload SubmissionDto msg) {
+        log.info("消息接收成功:"+msg);
+        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
+    }
+    /* 回调消息接收 */
+    @StreamListener(SubmissionSink.ResInput)
+    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
+        log.info("消息接收成功:"+receiveMsg);
+        res = receiveMsg;
+    }
+
 }

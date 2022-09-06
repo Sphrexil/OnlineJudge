@@ -22,6 +22,5 @@ public class TestResult {
     private Integer exitCode;
     private Integer error;
     private Integer result;
-
-    private Integer[] resultSet;
+    private String lastStatus;
 }

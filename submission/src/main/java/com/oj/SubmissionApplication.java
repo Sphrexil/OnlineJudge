@@ -19,6 +19,4 @@ public class SubmissionApplication {
     public static void main(String[] args) {
         SpringApplication.run(SubmissionApplication.class, args);
     }
-
-
 }

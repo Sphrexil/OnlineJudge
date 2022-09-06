@@ -8,6 +8,9 @@ import com.oj.mq.channels.SubmissionSource;
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -38,7 +41,7 @@ public class SubTestService {
         this.redisCache = redisCache;
     }
 
-    @Cacheable(value = "result", key = "#root.method.name")
+//    @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
 
         MessageBuilder<SubmissionEntity> message = MessageBuilder.withPayload(msg);
@@ -57,30 +60,8 @@ public class SubTestService {
         return ResponseResult.okResult(res);
     }
 
-//    public ResponseResult send(String msg) {
-//
-//        MessageBuilder<String> message = MessageBuilder.withPayload(msg);
-//        boolean flag1 = submissionSource.submissionOutput().send(message.build());
-//        if (flag1) {
-//            while (res == null) {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        redisCache.setCacheObject("res", ResponseResult.okResult(res));
-//        return ResponseResult.okResult(res);
-//    }
-//    @StreamListener(SubmissionSink.SubmissionInput)
-//    public void receive(@Payload SubmissionEntity msg) {
-//        System.out.println("消息接收成功:"+msg);
-//        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
-//    }
     @StreamListener(SubmissionSink.ResInput)
     public void setReceiveMsg(@Payload SubmissionEntity receiveMsg) {
-        log.info("消息接收成功{}",receiveMsg);
-        res = receiveMsg;
+        log.info("消息接收成功{}", receiveMsg);
     }
 }

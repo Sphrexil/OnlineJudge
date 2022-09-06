@@ -22,7 +22,6 @@ public class SenderController {
     @PostMapping("/send")
     @ResponseBody
     public ResponseResult send(@RequestBody SubmissionEntity submission) throws Exception {
-
         return senderService.send(submission);
     }
 }

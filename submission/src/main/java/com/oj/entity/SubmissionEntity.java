@@ -8,6 +8,8 @@ import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 
 @Data
 @TableName("submission")
@@ -22,6 +24,7 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *	提交代码
 	 */
+	@NotNull
 	private String code;
 	/**
 	 *	创建时间
@@ -43,14 +46,17 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *	内存使用
 	 */
+	@NotNull(message = "不能没有内存限制")
 	private Integer memoryUsage;
 	/**
 	 *	答题时间
 	 */
+	@NotNull(message = "不能没有时间限制")
 	private Integer timeUsage;
 	/**
 	 *	作者
 	 */
+	@NotNull(message = "不能无作者")
 	private Long author;
 	/**
 	 *	逻辑删除
@@ -61,6 +67,7 @@ public class SubmissionEntity implements Serializable {
 	/**
 	 *  问题题号
 	 */
+	@NotNull(message = "问题不能为空")
 	private Long problemId;
 
 	/**
