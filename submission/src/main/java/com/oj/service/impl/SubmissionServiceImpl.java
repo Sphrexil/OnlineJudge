@@ -83,6 +83,9 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
 
         submissionDto.setCode(code);
         submissionDto.setLanguage(language);
+        if (Objects.nonNull(submission.getTestCase())) {
+            submissionDto.setSubTestCase(submission.getTestCase());
+        }
         // 这里加上language的设置
         // 这里发送消息,这里可以加上tags，headers等附带判断消息
         boolean flag = submissionSource.submissionOutput().send(MessageBuilder.withPayload(submissionDto).build());
@@ -106,16 +109,16 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
 
     // 接收第一次的消息和回调消息的示例如下
     private SubmissionDto res = null; // 这里看自己需要什么类型的返回结果
-    /* 第一次消息接收，应该将这个放到judge里面去，可以用一个变量接收 */
-    @StreamListener(SubmissionSink.SubmissionInput)
-    public void receive(@Payload SubmissionDto msg) {
-        System.out.println("消息接收成功:"+msg);
-        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
-    }
-    /* 回调消息接收 */
-    @StreamListener(SubmissionSink.ResInput)
-    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
-        System.out.println("消息接收成功:"+receiveMsg);
-        res = receiveMsg;
-    }
+//    /* 第一次消息接收，应该将这个放到judge里面去，可以用一个变量接收 */
+//    @StreamListener(SubmissionSink.SubmissionInput)
+//    public void receive(@Payload SubmissionDto msg) {
+//        System.out.println("消息接收成功:"+msg);
+//        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
+//    }
+//    /* 回调消息接收 */
+//    @StreamListener(SubmissionSink.ResInput)
+//    public void setReceiveMsg(@Payload SubmissionDto receiveMsg) {
+//        System.out.println("消息接收成功:"+receiveMsg);
+//        res = receiveMsg;
+//    }
 }

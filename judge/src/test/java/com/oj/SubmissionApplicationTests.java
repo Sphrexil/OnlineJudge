@@ -1,6 +1,6 @@
 package com.oj;
 
-import com.oj.mq.test.SubTestService;
+import com.oj.mq.test.JudgeTestService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,8 @@ import org.springframework.test.context.TestConstructor;
 class SubmissionApplicationTests {
     private static final Logger log = LoggerFactory.getLogger(TestApplicationTests.class);
 
-    private final SubTestService senderService;
-    SubmissionApplicationTests(SubTestService service){
+    private final JudgeTestService senderService;
+    SubmissionApplicationTests(JudgeTestService service){
         this.senderService = service;
     }
     @Test

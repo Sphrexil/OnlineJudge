@@ -8,13 +8,7 @@ import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- *
- *
- * @author chenshun
- * @email sunlightcs@gmail.com
- * @date 2022-08-27 16:37:04
- */
+
 @Data
 @TableName("submission")
 public class SubmissionEntity implements Serializable {
@@ -69,4 +63,9 @@ public class SubmissionEntity implements Serializable {
 	 */
 	private Long problemId;
 
+	/**
+	 * 	问题示例
+	 */
+	@TableField(exist = false)
+	private String testCase;
 }

@@ -7,6 +7,7 @@ import com.oj.mq.channels.SubmissionSource;
 
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -24,14 +25,15 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class subTestService {
+@Slf4j
+public class SubTestService {
 
     private final SubmissionSource submissionSource;
     final RedisCache redisCache;
     SubmissionEntity res = null;
 
     @Autowired
-    public subTestService(SubmissionSource submissionSource, RedisCache redisCache) {
+    public SubTestService(SubmissionSource submissionSource, RedisCache redisCache) {
         this.submissionSource = submissionSource;
         this.redisCache = redisCache;
     }
@@ -50,33 +52,35 @@ public class subTestService {
                 }
             }
         }
-        redisCache.setCacheObject("res", ResponseResult.okResult(res));
-        return ResponseResult.okResult(res);
-    }
-    public ResponseResult send(String msg) {
 
-        MessageBuilder<String> message = MessageBuilder.withPayload(msg);
-        boolean flag1 = submissionSource.submissionOutput().send(message.build());
-        if (flag1) {
-            while (res == null) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         redisCache.setCacheObject("res", ResponseResult.okResult(res));
         return ResponseResult.okResult(res);
     }
-    @StreamListener(SubmissionSink.SubmissionInput)
-    public void receive(@Payload SubmissionEntity msg) {
-        System.out.println("消息接收成功:"+msg);
-        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
-    }
+
+//    public ResponseResult send(String msg) {
+//
+//        MessageBuilder<String> message = MessageBuilder.withPayload(msg);
+//        boolean flag1 = submissionSource.submissionOutput().send(message.build());
+//        if (flag1) {
+//            while (res == null) {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        redisCache.setCacheObject("res", ResponseResult.okResult(res));
+//        return ResponseResult.okResult(res);
+//    }
+//    @StreamListener(SubmissionSink.SubmissionInput)
+//    public void receive(@Payload SubmissionEntity msg) {
+//        System.out.println("消息接收成功:"+msg);
+//        submissionSource.resOut().send(MessageBuilder.withPayload(msg).build());
+//    }
     @StreamListener(SubmissionSink.ResInput)
     public void setReceiveMsg(@Payload SubmissionEntity receiveMsg) {
-        System.out.println("消息接收成功:"+receiveMsg);
+        log.info("消息接收成功{}",receiveMsg);
         res = receiveMsg;
     }
 }

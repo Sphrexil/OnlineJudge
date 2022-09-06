@@ -1,13 +1,11 @@
 package com.oj.controller;
 
 import com.oj.entity.SubmissionEntity;
-import com.oj.mq.test.subTestService;
+import com.oj.mq.test.SubTestService;
 import com.oj.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * description: SenderController
@@ -19,9 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SenderController {
 
     @Autowired
-    subTestService senderService;
+    SubTestService senderService;
 
-    @RequestMapping("/send")
+    @PostMapping("/send")
     @ResponseBody
     public ResponseResult send(@RequestBody SubmissionEntity submission) throws Exception {
 
