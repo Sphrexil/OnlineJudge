@@ -12,5 +12,7 @@ public interface ProblemService extends IService<ProblemEntity> {
     ResponseResult getProblemList(Integer pageNum, Integer pageSize);
 
     ResponseResult getProblemById(Long id);
+
+    ResponseResult getProblemByShowId(Long showId);
 }
 

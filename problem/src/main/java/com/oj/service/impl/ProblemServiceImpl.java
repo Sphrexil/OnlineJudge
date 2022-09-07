@@ -47,4 +47,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
 
         return ResponseResult.okResult(problemEntity);
     }
+
+    @Override
+    public ResponseResult getProblemByShowId(Long showId) {
+        /* TODO 问题是否可见需要定义为常量 */
+        ProblemEntity problem = this.getOne(new LambdaQueryWrapper<ProblemEntity>()
+                .eq(ProblemEntity::getShowId, showId)
+                .eq(ProblemEntity::getVisible, 1));
+
+        return ResponseResult.okResult(problem);
+    }
 }

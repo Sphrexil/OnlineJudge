@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
+
 
 @RestController
 @RequestMapping("/problem")
@@ -42,6 +44,12 @@ public class ProblemController {
     public ResponseResult getProblemById(@PathVariable("id") Long id){
 
         return problemService.getProblemById(id);
+    }
+
+    @GetMapping("/showInfo/{showId}")
+    public ResponseResult getProblemByShowId(@PathVariable("showId") @NotNull Long showId){
+
+        return problemService.getProblemByShowId(showId);
     }
 
     /**

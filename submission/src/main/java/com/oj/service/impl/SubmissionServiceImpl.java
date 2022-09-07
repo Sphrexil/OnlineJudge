@@ -46,7 +46,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
 
     public static final String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
     @Override
-    @CachePut(value = "submission#300", key = "#root.method.name + #uerProblemListVo.relatedUser")
+    @CachePut(value = "submission#300", key = "#root.method.name + #uerProblemListVo.relatedUser+#uerProblemListVo.problemId")
     public ResponseResult getSubmissionList(UerProblemListVo uerProblemListVo) {
         if (Objects.isNull(uerProblemListVo)) {
             // TODO 待加入错误信息
@@ -84,7 +84,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     }
 
     @Override
-    @CacheEvict(value = "submission", key = "'getSubmissionList' + #submission.relatedUser")
+    @CacheEvict(value = "submission", key = "'getSubmissionList' + #submission.relatedUser+#submission.relatedProblem")
     public ResponseResult submit(SubmissionStatusEntity submission) {
 
         Long problemId = submission.getRelatedProblem();
@@ -123,7 +123,6 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
             submission.setMemoryUsage(result.getMemoryUsage());
             submission.setStatus(result.getStatus());
             boolean save = this.save(submission);
-            log.info("插入状态 {}",save);
         }
         return ResponseResult.okResult(result);
     }
