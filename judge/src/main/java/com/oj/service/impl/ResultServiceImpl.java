@@ -44,7 +44,7 @@ public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> impl
     }
 
     @Override
-    @StreamListener(JudgeSink.SubmissionInput)
+//    @StreamListener(JudgeSink.SubmissionInput)
     public void judge(@Payload SubmissionDto msg) {
         log.info("消息接收成功{}",msg);
         ResultVo resultVo = new ResultVo();;

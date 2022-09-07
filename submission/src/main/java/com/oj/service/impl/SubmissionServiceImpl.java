@@ -17,19 +17,16 @@ import com.oj.service.SubmissionService;
 import com.oj.utils.PageUtils;
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -44,31 +41,22 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     private SubmissionSource submissionSource;
     @Autowired
     private RedisCache redisCache;
-
+    @Autowired
+    private RedissonClient redisson;
     @Override
     @CachePut(value = SubmissionConstant.CACHE_GROUP + "#300", key = "#root.method.name + #uerProblemListVo.relatedUser+#uerProblemListVo.problemId")
     public ResponseResult getSubmissionList(UerProblemListVo uerProblemListVo) {
         /* 用uuid作为value可防止误删锁 */
-        String uuid = UUID.randomUUID().toString();
-        Boolean lock = redisCache.setCacheObjectIfAbsent(SubmissionConstant.LOCK_KEY, uuid, SubmissionConstant.LOCK_TTL, TimeUnit.SECONDS);
-        if (lock) {
-            ResponseResult responseResult;
-            try {
-                responseResult = getResponseResult(uerProblemListVo);
-            }finally {
-                /* 无论是否发生异常都会解锁 */
-                redisCache.execute(new DefaultRedisScript<>(SubmissionConstant.LOCK_SCRIPT, Long.class), Arrays.asList(SubmissionConstant.LOCK_KEY), uuid);
-            }
-            return responseResult;
-        } else {
-            try {
-                /* 如果发现业务已上锁，则进行休眠100毫秒自旋查询 */
-                Thread.sleep(SubmissionConstant.LOCK_SPIN_TIME);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return getSubmissionList(uerProblemListVo);
+        RLock lock = redisson.getLock("SubmissionListLock");
+        lock.lock(SubmissionConstant.LOCK_TTL_LIST, TimeUnit.SECONDS);
+        ResponseResult responseResult;
+        try {
+            responseResult = getResponseResult(uerProblemListVo);
+        }finally {
+            lock.unlock();
+            /* 无论是否发生异常都会解锁 */
         }
+        return responseResult;
     }
 
     private ResponseResult getResponseResult(UerProblemListVo uerProblemListVo) {
@@ -100,32 +88,42 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         Long problemId = submission.getRelatedProblem();
         String code = submission.getCode();
         String language = submission.getLanguage();
-        ResponseResult res = problemFeignService.getProblemById(problemId);
-        SubmissionDto submissionDto = (SubmissionDto) res.getData(new TypeReference<SubmissionDto>() {
-        });
 
-        submissionDto.setCode(code);
-        submissionDto.setLanguage(language);
-        if (Objects.nonNull(submission.getTestCase())) {
-            submissionDto.setSubTestCase(submission.getTestCase());
-        }
         // 这里加上language的设置
         // 这里发送消息,这里可以加上tags，headers等附带判断消息
-        boolean flag = submissionSource.submissionOutput().send(MessageBuilder.withPayload(submissionDto).build());
-        if (flag) {
-            int count = 0;
-            while (result == null) {
-                try {
-                    // 这里可以将查的时间缩短点，但是有可能的是这边发成功了，但是发回来的时候失败了
-                    if (count > 10) {
-                        break;
+        RLock lock = redisson.getLock("SubmitLock");
+        lock.lock(SubmissionConstant.LOCK_TTL_SUBMIT, TimeUnit.SECONDS);
+        ResultVo result = null;
+        try {
+            ResponseResult res = problemFeignService.getProblemById(problemId);
+            SubmissionDto submissionDto = (SubmissionDto) res.getData(new TypeReference<SubmissionDto>() {
+            });
+
+            submissionDto.setCode(code);
+            submissionDto.setLanguage(language);
+            if (Objects.nonNull(submission.getTestCase())) {
+                submissionDto.setSubTestCase(submission.getTestCase());
+            }
+            String uuid = UUID.randomUUID().toString();
+            boolean flag = submissionSource.submissionOutput().send(MessageBuilder.withPayload(submissionDto).setHeader("key", uuid).build());
+            if (flag) {
+                int count = 0;
+                while (result == null) {
+                    try {
+                        result = redisCache.getCacheObject("result::"+uuid);
+                        // 这里可以将查的时间缩短点，但是有可能的是这边发成功了，但是发回来的时候失败了
+                        if (count > 10) {
+                            break;
+                        }
+                        count ++;
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    count ++;
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
+        } finally {
+            lock.unlock();
         }
         if (!submission.getIsDebug()) {
             submission.setError(result.getCompileError());
@@ -135,15 +133,5 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
             this.save(submission);
         }
         return ResponseResult.okResult(result);
-    }
-
-    // 接收第一次的消息和回调消息的示例如下
-    private ResultVo result = null; // 这里看自己需要什么类型的返回结果
-
-    /* 回调消息接收 */
-    @StreamListener(SubmissionSink.ResInput)
-    public void setReceiveMsg(@Payload ResultVo receiveMsg) {
-        log.info("消息接收成功:"+receiveMsg);
-        result = receiveMsg;
     }
 }

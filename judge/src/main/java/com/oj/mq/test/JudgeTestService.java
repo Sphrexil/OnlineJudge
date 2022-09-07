@@ -11,11 +11,13 @@ import com.oj.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -40,13 +42,11 @@ public class JudgeTestService {
     }
 
     @StreamListener(JudgeSink.SubmissionInput)
-    public void judge(@Payload SubmissionDto msg) {
-        log.info("消息接收成功{}",msg);
+    public void judge(Message message) {
+        String key = (String) message.getHeaders().get("key");
+        log.info("消息接收成功123{}",message.getPayload());
         ResultVo resultVo = new ResultVo(200, 300, "NullGirlfriendException", "Error");
-        Date date = new Date();
         //        ResultEntity resultEntity = new ResultEntity(1L, resultVo, 5L, 1L, 2L, 1, date);
-        // 存入数据库
-        boolean flag = judgeSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
-        log.info("回调消息发送状态{}",flag);
+        redisCache.setCacheObject("result::"+key, resultVo, 20, TimeUnit.SECONDS);
     }
 }
