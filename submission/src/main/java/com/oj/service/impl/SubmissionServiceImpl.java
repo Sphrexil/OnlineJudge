@@ -122,7 +122,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
             submission.setTimeUsage(result.getTimeUsage());
             submission.setMemoryUsage(result.getMemoryUsage());
             submission.setStatus(result.getStatus());
-            boolean save = this.save(submission);
+            this.save(submission);
         }
         return ResponseResult.okResult(result);
     }
