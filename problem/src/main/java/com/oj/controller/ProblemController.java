@@ -41,7 +41,7 @@ public class ProblemController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    public ResponseResult getProblemById(@PathVariable("id") Long id){
+    public ResponseResult getProblemById(@PathVariable("id") @NotNull Long id){
 
         return problemService.getProblemById(id);
     }

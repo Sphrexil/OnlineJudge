@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * @Title: swagger的全局配置
- * @Description: TODO
+ * @Description:
  * @Author: zhenyu
  * @DateTime: 2022/8/28 17:25
  */
@@ -72,9 +72,9 @@ public class SwaggerConfig implements ApplicationListener<WebServerInitializedEv
             int port = event.getWebServer().getPort();
             // 获取应用名
             String applicationName = event.getApplicationContext().getApplicationName();
-            log.info("wori");
             // 打印 swagger2文档地址
             log.info("项目启动启动成功！swagger2 接口文档地址: http://" + hostAddress + ":" + port + applicationName + "/doc.html");
+            log.info("项目启动启动成功！nacos 地址: http://" + hostAddress + ":" + "8848");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

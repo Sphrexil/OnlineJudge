@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.Objects;
 
+import static com.oj.constants.ProblemConstant.IsProblemVisible.ABLE_TO_SEE;
+
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> implements ProblemService {
@@ -21,9 +23,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
 
         // 查询
         LambdaQueryWrapper<ProblemEntity> queryWrapper = new LambdaQueryWrapper<>();
-        // TODO 需要将此处的是否可见设置到公共模块的常量中去
         // 查询可见为1的数据
-        queryWrapper.eq(ProblemEntity::getVisible, 1)
+        queryWrapper.eq(ProblemEntity::getVisible, ABLE_TO_SEE.getCode())
                     // 按照时间倒序排列
                     .orderByDesc(ProblemEntity::getCreateTime);
         // 分页
@@ -39,9 +40,6 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
     @Override
     public ResponseResult getProblemById(Long id) {
 
-        if (Objects.isNull(id)) {
-            throw new RuntimeException();
-        }
         // TODO 待优化
         ProblemEntity problemEntity = this.getById(id);
 
@@ -53,7 +51,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
         /* TODO 问题是否可见需要定义为常量 */
         ProblemEntity problem = this.getOne(new LambdaQueryWrapper<ProblemEntity>()
                 .eq(ProblemEntity::getShowId, showId)
-                .eq(ProblemEntity::getVisible, 1));
+                .eq(ProblemEntity::getVisible, ABLE_TO_SEE.getCode()));
 
         return ResponseResult.okResult(problem);
     }

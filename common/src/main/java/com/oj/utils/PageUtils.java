@@ -2,6 +2,8 @@ package com.oj.utils;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.oj.enums.ResultCode;
+import com.oj.exceptions.SystemException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -46,11 +48,9 @@ public class PageUtils {
      */
     public static <T> IPage<T> getPage(Integer pageNum, Integer pageSize, Class<T> clazz) {
         if (Objects.isNull(pageNum) || Objects.isNull(pageSize) || pageNum.equals(0) || pageSize.equals(0)) {
-            throw new RuntimeException("页码或者页码大小不能为空或0");
-            // TODO 要将错误信息统一到ResultCode中去
+            throw new SystemException(ResultCode.PAGE_BLANK_OR_ZERO);
         }
         IPage<T> EntityPage = new Page<>(pageNum, pageSize);
-
         return EntityPage;
     }
 

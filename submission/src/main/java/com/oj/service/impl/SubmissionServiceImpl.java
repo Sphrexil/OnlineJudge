@@ -4,6 +4,7 @@ package com.oj.service.impl;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.oj.constants.SubmissionConstant;
 import com.oj.dao.SubmissionDao;
 import com.oj.entity.SubmissionStatusEntity;
 import com.oj.feign.ProblemFeignService;
@@ -44,47 +45,56 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     @Autowired
     private RedisCache redisCache;
 
-    public static final String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
     @Override
-    @CachePut(value = "submission#300", key = "#root.method.name + #uerProblemListVo.relatedUser+#uerProblemListVo.problemId")
+    @CachePut(value = SubmissionConstant.CACHE_GROUP + "#300", key = "#root.method.name + #uerProblemListVo.relatedUser+#uerProblemListVo.problemId")
     public ResponseResult getSubmissionList(UerProblemListVo uerProblemListVo) {
-        if (Objects.isNull(uerProblemListVo)) {
-            // TODO 待加入错误信息
-            throw new RuntimeException("信息为空");
-        }
+        /* 用uuid作为value可防止误删锁 */
         String uuid = UUID.randomUUID().toString();
-        Boolean lock = redisCache.setCacheObjectIfAbsent("lock", uuid,300, TimeUnit.SECONDS);
-        PageUtils pageData = null;
+        Boolean lock = redisCache.setCacheObjectIfAbsent(SubmissionConstant.LOCK_KEY, uuid, SubmissionConstant.LOCK_TTL, TimeUnit.SECONDS);
         if (lock) {
+            ResponseResult responseResult;
             try {
-                // 取值
-                Long author = uerProblemListVo.getRelatedUser();
-                Long problemId = uerProblemListVo.getProblemId();
-                String language = uerProblemListVo.getLanguage();
-                Integer pageNum = uerProblemListVo.getPageNum();
-                Integer pageSize = uerProblemListVo.getPageSize();
-
-                LambdaQueryWrapper<SubmissionStatusEntity> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(SubmissionStatusEntity::getRelatedUser, author)
-                        // 用户可能会选择查询自己所有的提交记录
-                        .eq(Objects.nonNull(problemId), SubmissionStatusEntity::getRelatedProblem, problemId)
-                        // 用户可能会选择查询具体语言语言
-                        .eq(Objects.nonNull(language), SubmissionStatusEntity::getLanguage, language);
-                // TODO 分页，需要根据需求封装vo返回
-                IPage<SubmissionStatusEntity> submissionIPage = PageUtils.getPage(pageNum, pageSize, SubmissionStatusEntity.class);
-                page(submissionIPage, queryWrapper);
-                pageData = new PageUtils(submissionIPage);
+                responseResult = getResponseResult(uerProblemListVo);
             }finally {
-                redisCache.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), uuid);
+                /* 无论是否发生异常都会解锁 */
+                redisCache.execute(new DefaultRedisScript<>(SubmissionConstant.LOCK_SCRIPT, Long.class), Arrays.asList(SubmissionConstant.LOCK_KEY), uuid);
             }
+            return responseResult;
+        } else {
+            try {
+                /* 如果发现业务已上锁，则进行休眠100毫秒自旋查询 */
+                Thread.sleep(SubmissionConstant.LOCK_SPIN_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return getSubmissionList(uerProblemListVo);
         }
+    }
 
+    private ResponseResult getResponseResult(UerProblemListVo uerProblemListVo) {
+        PageUtils pageData;
+        // 取值
+        Long author = uerProblemListVo.getRelatedUser();
+        Long problemId = uerProblemListVo.getProblemId();
+        String language = uerProblemListVo.getLanguage();
+        Integer pageNum = uerProblemListVo.getPageNum();
+        Integer pageSize = uerProblemListVo.getPageSize();
 
+        LambdaQueryWrapper<SubmissionStatusEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SubmissionStatusEntity::getRelatedUser, author)
+                // 用户可能会选择查询自己所有的提交记录
+                .eq(Objects.nonNull(problemId), SubmissionStatusEntity::getRelatedProblem, problemId)
+                // 用户可能会选择查询具体语言语言
+                .eq(Objects.nonNull(language), SubmissionStatusEntity::getLanguage, language);
+        // TODO 分页，需要根据需求封装vo返回
+        IPage<SubmissionStatusEntity> submissionIPage = PageUtils.getPage(pageNum, pageSize, SubmissionStatusEntity.class);
+        page(submissionIPage, queryWrapper);
+        pageData = new PageUtils(submissionIPage);
         return ResponseResult.okResult(pageData);
     }
 
     @Override
-    @CacheEvict(value = "submission", key = "'getSubmissionList' + #submission.relatedUser+#submission.relatedProblem")
+    @CacheEvict(value = SubmissionConstant.CACHE_GROUP, key = "'getSubmissionList' + #submission.relatedUser+#submission.relatedProblem")
     public ResponseResult submit(SubmissionStatusEntity submission) {
 
         Long problemId = submission.getRelatedProblem();
@@ -136,5 +146,4 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         log.info("消息接收成功:"+receiveMsg);
         result = receiveMsg;
     }
-
 }

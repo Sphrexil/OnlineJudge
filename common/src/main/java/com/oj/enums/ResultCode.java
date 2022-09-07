@@ -23,7 +23,13 @@ public enum ResultCode {
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     /* 系统错误 */
-    UNKNOWN_EXCEPTION(4001,"系统未知异常");
+    UNKNOWN_EXCEPTION(4001,"系统未知异常"),
+    /* 提交错误 */
+    CODE_BLANK(5001, "提交代码为空或空串"),
+    AUTHOR_BLANK(5002, "作者为空"),
+    PROBLEM_BLANK(5003, "问题为空"),
+    /*  页码错误 */
+    PAGE_BLANK_OR_ZERO(5004, "页码或者页码大小不能为空或0");
 
     private Integer code;
     private String msg;

@@ -26,7 +26,7 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *	提交代码
 	 */
-	@NotBlank(message = "提交代码不能为空和空串")
+	@NotBlank(message = "提交代码为空或空串")
 	private String code;
 	/**
 	 *	创建时间
@@ -61,7 +61,7 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *	作者
 	 */
-	@NotNull(message = "不能无作者")
+	@NotNull(message = "作者为空")
 	private Long relatedUser;
 	/**
 	 *	逻辑删除
@@ -74,7 +74,7 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *  问题题号
 	 */
-	@NotNull(message = "问题不能为空")
+	@NotNull(message = "问题为空")
 	private Long relatedProblem;
 
 	/**

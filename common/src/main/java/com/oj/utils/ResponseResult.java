@@ -12,7 +12,7 @@ public class ResponseResult<T> implements Serializable {
 
     /**
      * @Title: 公共返回类
-     * @Description: TODO
+     * @Description:
      * @Author: zhenyu
      * @DateTime: 2022/8/27 20:17
      * @param code 状态码
