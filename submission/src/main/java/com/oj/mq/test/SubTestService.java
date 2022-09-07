@@ -1,7 +1,6 @@
 package com.oj.mq.test;
 
 import com.oj.entity.SubmissionEntity;
-import com.oj.entity.SubmissionStatusEntity;
 import com.oj.mq.channels.SubmissionSink;
 import com.oj.mq.channels.SubmissionSource;
 

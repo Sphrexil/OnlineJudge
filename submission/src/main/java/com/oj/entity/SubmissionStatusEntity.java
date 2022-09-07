@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class SubmissionStatusEntity implements Serializable {
 	 *
 	 */
 	@TableId
+	@ApiModelProperty(value = "表id", hidden = true)
 	private Long id;
 	/**
 	 *	提交代码
@@ -30,10 +32,12 @@ public class SubmissionStatusEntity implements Serializable {
 	 *	创建时间
 	 */
 	@TableField(fill = FieldFill.INSERT)
+	@ApiModelProperty(value = "创建时间", hidden = true)
 	private Date createTime;
 	/**
 	 *	提交状态
 	 */
+	@ApiModelProperty(value = "返回的状态", hidden = true)
 	private String status;
 	/**
 	 *	编程语言
@@ -42,32 +46,36 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *	编译错误信息
 	 */
-	private String compileError;
+	@ApiModelProperty(value = "返回的错误", hidden = true)
+	private String error;
 	/**
 	 *	内存使用
 	 */
+	@ApiModelProperty(value = "内存使用", hidden = true)
 	private Integer memoryUsage;
 	/**
 	 *	答题时间
 	 */
+	@ApiModelProperty(value = "时间使用", hidden = true)
 	private Integer timeUsage;
 	/**
 	 *	作者
 	 */
 	@NotNull(message = "不能无作者")
-	private Long author;
+	private Long relatedUser;
 	/**
 	 *	逻辑删除
 	 */
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)
-	private Integer delFlag;
+	@ApiModelProperty(value = "逻辑删除", hidden = true)
+	private Integer isDel;
 
 	/**
 	 *  问题题号
 	 */
 	@NotNull(message = "问题不能为空")
-	private Long problemId;
+	private Long relatedProblem;
 
 	/**
 	 * 	问题示例
@@ -76,5 +84,6 @@ public class SubmissionStatusEntity implements Serializable {
 	private String testCase;
 
 	@TableField(exist = false)
+	@NotNull
 	private Boolean isDebug;
 }

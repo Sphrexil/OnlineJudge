@@ -46,7 +46,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
 
     public static final String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
     @Override
-    @CachePut(value = "submission#300", key = "#root.method.name + #uerProblemListVo.author")
+    @CachePut(value = "submission#300", key = "#root.method.name + #uerProblemListVo.relatedUser")
     public ResponseResult getSubmissionList(UerProblemListVo uerProblemListVo) {
         if (Objects.isNull(uerProblemListVo)) {
             // TODO 待加入错误信息
@@ -58,16 +58,16 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         if (lock) {
             try {
                 // 取值
-                Long author = uerProblemListVo.getAuthor();
+                Long author = uerProblemListVo.getRelatedUser();
                 Long problemId = uerProblemListVo.getProblemId();
                 String language = uerProblemListVo.getLanguage();
                 Integer pageNum = uerProblemListVo.getPageNum();
                 Integer pageSize = uerProblemListVo.getPageSize();
 
                 LambdaQueryWrapper<SubmissionStatusEntity> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(SubmissionStatusEntity::getAuthor, author)
+                queryWrapper.eq(SubmissionStatusEntity::getRelatedUser, author)
                         // 用户可能会选择查询自己所有的提交记录
-                        .eq(Objects.nonNull(problemId), SubmissionStatusEntity::getProblemId, problemId)
+                        .eq(Objects.nonNull(problemId), SubmissionStatusEntity::getRelatedProblem, problemId)
                         // 用户可能会选择查询具体语言语言
                         .eq(Objects.nonNull(language), SubmissionStatusEntity::getLanguage, language);
                 // TODO 分页，需要根据需求封装vo返回
@@ -84,10 +84,10 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     }
 
     @Override
-    @CacheEvict(value = "submission", key = "'getSubmissionList' + #submission.author")
+    @CacheEvict(value = "submission", key = "'getSubmissionList' + #submission.relatedUser")
     public ResponseResult submit(SubmissionStatusEntity submission) {
 
-        Long problemId = submission.getProblemId();
+        Long problemId = submission.getRelatedProblem();
         String code = submission.getCode();
         String language = submission.getLanguage();
         ResponseResult res = problemFeignService.getProblemById(problemId);
@@ -118,11 +118,12 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
             }
         }
         if (!submission.getIsDebug()) {
-            submission.setCompileError(result.getCompileError());
+            submission.setError(result.getCompileError());
             submission.setTimeUsage(result.getTimeUsage());
             submission.setMemoryUsage(result.getMemoryUsage());
             submission.setStatus(result.getStatus());
-            this.baseMapper.insert(submission);
+            boolean save = this.save(submission);
+            log.info("插入状态 {}",save);
         }
         return ResponseResult.okResult(result);
     }

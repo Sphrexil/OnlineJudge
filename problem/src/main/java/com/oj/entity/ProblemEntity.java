@@ -1,10 +1,7 @@
 package com.oj.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,15 +19,14 @@ public class ProblemEntity implements Serializable {
 	 *
 	 */
 	@TableId
+	@ApiModelProperty(value = "表id", hidden = true)
 	private Long id;
 	/**
 	 * 问题显示的名字
-
 	 */
 	private String problemName;
 	/**
 	 * 问题主干
-
 	 */
 	private String problem;
 	/**
@@ -39,16 +35,14 @@ public class ProblemEntity implements Serializable {
 	private String outputDescribe;
 	/**
 	 * 输入描述
-
 	 */
 	private String inputDescribe;
 	/**
 	 * 测试样例--JSON
 	 */
-	private String testCase;
+	private String sample;
 	/**
 	 * 标签
-
 	 */
 	private String tag;
 	/**
@@ -58,19 +52,21 @@ public class ProblemEntity implements Serializable {
 	private Integer visible;
 	/**
 	 * 软删除
-
 	 */
-	private Integer del_flag;
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
+	@ApiModelProperty(value = "逻辑删除", hidden = true)
+	private Integer isDel;
 	/**
 	 *
 	 */
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "创建时间", hidden = true)
 	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
 	/**
 	 *
 	 */
-	@ApiModelProperty(value = "修改时间")
+	@ApiModelProperty(value = "修改时间", hidden = true)
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateTime;
 	/**
@@ -90,4 +86,6 @@ public class ProblemEntity implements Serializable {
 	 * 时间限制
 	 */
 	private Integer timeLimit;
+
+	private String showId;
 }

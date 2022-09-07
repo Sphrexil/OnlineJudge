@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 public class UerProblemListVo implements Serializable {
     @NotNull(message = "作者不能为空")
-    private Long author;
+    private Long relatedUser;
 
     private Long problemId;
 

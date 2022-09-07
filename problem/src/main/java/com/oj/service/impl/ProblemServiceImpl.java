@@ -43,7 +43,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
             throw new RuntimeException();
         }
         // TODO 待优化
-        ProblemEntity problemEntity = this.baseMapper.selectById(id);
+        ProblemEntity problemEntity = this.getById(id);
 
         return ResponseResult.okResult(problemEntity);
     }
