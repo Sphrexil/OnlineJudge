@@ -4,6 +4,13 @@ server:
     session:
       timeout: 30m
 
+rocketmq:
+  name-server: 192.168.1.129:9876
+  producer:
+    group: producer-group1
+  consumer:
+    group: consumer-group1
+
 spring:
   application:
     name: submission
@@ -42,12 +49,12 @@ spring:
       discovery:
         server-addr: localhost:8848
   #####################################rocketmq配置#####################################
-    stream:
-      rocketmq:
-        binder:
-          name-server: 192.168.1.129:9876
-          enable-msg-trace: true
-        bindings:
+#    stream:
+#      rocketmq:
+#        binder:
+#          name-server: 192.168.1.129:9876
+#          enable-msg-trace: true
+#        bindings:
           #开启事务消息需要在这边再次配置 在stream->rocketmq->bindings下配
           #生产者配置
 #          Boolean enabled = true;
@@ -71,27 +78,27 @@ spring:
 #          enabled = true;
 #          pullTimeout = 10000L;
 #          boolean fromStore;
-          Resinput:
-            consumer:
-              delayLevelWhenNextConsume: -1
-              group: res-group
-          SubmissionOutput:
-            producer:
-              transactional: true
-              group: sub-group
+#          Resinput:
+#            consumer:
+#              delayLevelWhenNextConsume: -1
+#              group: res-group
+#          SubmissionOutput:
+#            producer:
+#              transactional: true
+#              group: sub-group
           ##### 配置基本队列配置在stream->bindings下面配
           #基本属性配置 见下官文
           #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder
-      bindings:
+#      bindings:
     ###########开发测试组################
-        SubmissionOutput:
-          destination: sub-topic  #  topic位置
-          contentType: application/json  #  消息类型
-          group: sub-group #  生产者组别
-        ResInput:
-          destination: res-topic
-          contentType: application/json
-          group: res-group
+#        SubmissionOutput:
+#          destination: sub-topic  #  topic位置
+#          contentType: application/json  #  消息类型
+#          group: sub-group #  生产者组别
+#        ResInput:
+#          destination: res-topic
+#          contentType: application/json
+#          group: res-group
   #####################################mybatis-plus配置#####################################
 mybatis-plus:
   configuration:

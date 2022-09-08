@@ -7,16 +7,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.oj.constants.SubmissionConstant;
 import com.oj.dao.SubmissionDao;
 import com.oj.entity.SubmissionStatusEntity;
+import com.oj.enums.ResultCode;
+import com.oj.exceptions.SystemException;
 import com.oj.feign.ProblemFeignService;
-import com.oj.mq.channels.SubmissionSink;
-import com.oj.mq.channels.SubmissionSource;
-import com.oj.pojo.dto.SubmissionDto;
+import com.oj.pojo.MyMessage;
 import com.oj.pojo.vo.ResultVo;
+import com.oj.pojo.vo.SubmissionDto;
 import com.oj.pojo.vo.UerProblemListVo;
 import com.oj.service.SubmissionService;
 import com.oj.utils.PageUtils;
 import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -27,6 +31,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -38,11 +43,12 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     @Autowired
     private ProblemFeignService problemFeignService;
     @Autowired
-    private SubmissionSource submissionSource;
-    @Autowired
     private RedisCache redisCache;
     @Autowired
     private RedissonClient redisson;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
+
     @Override
     @CachePut(value = SubmissionConstant.CACHE_GROUP + "#300", key = "#root.method.name + #uerProblemListVo.relatedUser+#uerProblemListVo.problemId")
     public ResponseResult getSubmissionList(UerProblemListVo uerProblemListVo) {
@@ -52,7 +58,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
         ResponseResult responseResult;
         try {
             responseResult = getResponseResult(uerProblemListVo);
-        }finally {
+        } finally {
             lock.unlock();
             /* 无论是否发生异常都会解锁 */
         }
@@ -105,23 +111,37 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
                 submissionDto.setSubTestCase(submission.getTestCase());
             }
             String uuid = UUID.randomUUID().toString();
-            boolean flag = submissionSource.submissionOutput().send(MessageBuilder.withPayload(submissionDto).setHeader("key", uuid).build());
-            if (flag) {
-                int count = 0;
-                while (result == null) {
-                    try {
-                        result = redisCache.getCacheObject("result::"+uuid);
-                        // 这里可以将查的时间缩短点，但是有可能的是这边发成功了，但是发回来的时候失败了
-                        if (count > 10) {
-                            break;
-                        }
-                        count ++;
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+
+            rocketMQTemplate.asyncSend("sub-topic", MessageBuilder.withPayload(new MyMessage(submissionDto, uuid)).build(), new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    log.info("消息发送成功！: {}", sendResult);
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    log.error("消息发送失败！:" + throwable);
+                }
+            }, 5000);
+            int count = 0;
+            while (result == null) {
+                try {
+                    result = redisCache.getCacheObject("result::" + uuid);
+                    // 这里可以将查的时间缩短点，但是有可能的是这边发成功了，但是发回来的时候失败了
+                    if (count >= 50) {
+                        break;
                     }
+                    count++;
+                    Thread.sleep(SubmissionConstant.LOCK_SPIN_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
+            if (res == null) {
+                throw new SystemException(ResultCode.SUBMIT_RESULT_BLANK);
+            }
+        } catch (Exception e) {
+            log.error("结果获取异常:" + e);
         } finally {
             lock.unlock();
         }

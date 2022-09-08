@@ -11,7 +11,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 
 
 
-@EnableBinding(value = {SubmissionSource.class, SubmissionSink.class})
+//@EnableBinding(value = {SubmissionSource.class, SubmissionSink.class})
 @EnableCaching
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.oj.feign")

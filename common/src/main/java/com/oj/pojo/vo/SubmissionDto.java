@@ -1,8 +1,12 @@
-package com.oj.pojo.dto;
+package com.oj.pojo.vo;
+
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 
 /**
  * description: SubmissionVo

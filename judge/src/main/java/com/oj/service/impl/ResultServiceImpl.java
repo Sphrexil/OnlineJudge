@@ -4,20 +4,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.oj.TestUtils.CompileException;
 import com.oj.TestUtils.Judge;
 import com.oj.TestUtils.JudgingArgument;
-import com.oj.mq.channels.JudgeSink;
-import com.oj.mq.channels.JudgeSource;
 import com.oj.pojo.vo.TestResultVo;
 import com.oj.dao.ResultDao;
 import com.oj.entity.ResultEntity;
-import com.oj.pojo.dto.SubmissionDto;
+import com.oj.pojo.vo.SubmissionDto;
 import com.oj.pojo.vo.ResultVo;
 import com.oj.service.ResultService;
 import com.oj.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,19 +29,17 @@ import java.util.Date;
  */
 @Service
 @Slf4j
-public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> implements ResultService {
+public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> implements ResultService, RocketMQListener {
 
-    private final JudgeSource judgeSource;
+
     final RedisCache redisCache;
 
     @Autowired
-    public ResultServiceImpl(JudgeSource judgeSource, RedisCache redisCache) {
-        this.judgeSource = judgeSource;
+    public ResultServiceImpl(RedisCache redisCache) {
         this.redisCache = redisCache;
     }
 
     @Override
-//    @StreamListener(JudgeSink.SubmissionInput)
     public void judge(@Payload SubmissionDto msg) {
         log.info("消息接收成功{}",msg);
         ResultVo resultVo = new ResultVo();;
@@ -55,8 +50,6 @@ public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> impl
             resultEntity.getResultOfCase().add(testResultVo);
         }catch (CompileException e){
             resultVo = new ResultVo(0, 0, e.getMessage(), "COMPILE_ERROR");
-            boolean flag = judgeSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
-            log.info("回调消息发送状态 {}",flag);
             return;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -93,7 +86,10 @@ public class ResultServiceImpl extends ServiceImpl<ResultDao, ResultEntity> impl
             resultVo.setStatus("ACCEPT");
         }
         log.info("final result of test {}", resultVo);
-        boolean flag = judgeSource.resOut().send(MessageBuilder.withPayload(resultVo).build());
-        log.info("回调消息发送状态{}",flag);
+    }
+
+    @Override
+    public void onMessage(Object message) {
+
     }
 }

@@ -8,7 +8,7 @@ public interface JudgeSink {
 
 
     // 开发测试组
-    String SubmissionInput = "SubmissionInput";
-    @Input(SubmissionInput)
-    SubscribableChannel submissionInput();
+//    String SubmissionInput = "SubmissionInput";
+//    @Input(SubmissionInput)
+//    SubscribableChannel submissionInput();
 }

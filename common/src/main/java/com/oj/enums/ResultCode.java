@@ -28,8 +28,9 @@ public enum ResultCode {
     CODE_BLANK(5001, "提交代码为空或空串"),
     AUTHOR_BLANK(5002, "作者为空"),
     PROBLEM_BLANK(5003, "问题为空"),
+    SUBMIT_RESULT_BLANK(5004, "结果获取失败为空"),
     /*  页码错误 */
-    PAGE_BLANK_OR_ZERO(5004, "页码或者页码大小不能为空或0");
+    PAGE_BLANK_OR_ZERO(5005, "页码或者页码大小不能为空或0");
 
     private Integer code;
     private String msg;

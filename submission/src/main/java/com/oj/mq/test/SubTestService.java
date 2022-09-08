@@ -29,35 +29,35 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SubTestService {
 
-    private final SubmissionSource submissionSource;
+//    private final SubmissionSource submissionSource;
     final RedisCache redisCache;
     private ResultVo res = null;
 
     @Autowired
-    public SubTestService(SubmissionSource submissionSource, RedisCache redisCache) {
-        this.submissionSource = submissionSource;
+    public SubTestService( RedisCache redisCache) {
+//        this.submissionSource = submissionSource;
         this.redisCache = redisCache;
     }
 
 //    @Cacheable(value = "result", key = "#root.method.name")
     public ResponseResult send(SubmissionEntity msg) {
         MessageBuilder<SubmissionEntity> message = MessageBuilder.withPayload(msg);
-        boolean flag1 = submissionSource.submissionOutput().send(message.build());
-        if (flag1) {
-            while (res == null) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        boolean flag1 = submissionSource.submissionOutput().send(message.build());
+//        if (flag1) {
+//            while (res == null) {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
         return ResponseResult.okResult(res);
     }
 
-    @StreamListener(SubmissionSink.ResInput)
-    public void setReceiveMsg(@Payload ResultVo receiveMsg) {
-        log.info("回调消息接收成功{}", receiveMsg);
-        res = receiveMsg;
-    }
+//    @StreamListener(SubmissionSink.ResInput)
+//    public void setReceiveMsg(@Payload ResultVo receiveMsg) {
+//        log.info("回调消息接收成功{}", receiveMsg);
+//        res = receiveMsg;
+//    }
 }

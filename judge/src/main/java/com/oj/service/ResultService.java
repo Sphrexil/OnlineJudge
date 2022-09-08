@@ -2,7 +2,7 @@ package com.oj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.oj.entity.ResultEntity;
-import com.oj.pojo.dto.SubmissionDto;
+import com.oj.pojo.vo.SubmissionDto;
 import org.springframework.messaging.handler.annotation.Payload;
 
 
