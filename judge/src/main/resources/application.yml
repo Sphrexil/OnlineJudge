@@ -79,6 +79,7 @@ spring:
             consumer:
               delayLevelWhenNextConsume: -1
               group: sub-group
+             # tags: java-tag 可过滤消息，指定该信道接收tags值为java-tag的消息
           ##### 配置基本队列配置在stream->bindings下面配
           #基本属性配置 见下官文
           #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder

@@ -41,7 +41,7 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-  #####################################rocketmq配置#####################################
+    #####################################rocketmq配置#####################################
     stream:
       rocketmq:
         binder:
@@ -50,27 +50,27 @@ spring:
         bindings:
           #开启事务消息需要在这边再次配置 在stream->rocketmq->bindings下配
           #生产者配置
-#          Boolean enabled = true;
-#          String group;
-#          Integer maxMessageSize = 4194304;
-#          Boolean transactional = false;
-#          Boolean sync = false;
-#          Boolean vipChannelEnabled = true;
-#          int sendMessageTimeout = 3000;
-#          int compressMessageBodyThreshold = 4096;
-#          int retryTimesWhenSendFailed = 2;
-#          int retryTimesWhenSendAsyncFailed = 2;
-#          boolean retryNextServer = false;
+          #          Boolean enabled = true;
+          #          String group;
+          #          Integer maxMessageSize = 4194304;
+          #          Boolean transactional = false;
+          #          Boolean sync = false;
+          #          Boolean vipChannelEnabled = true;
+          #          int sendMessageTimeout = 3000;
+          #          int compressMessageBodyThreshold = 4096;
+          #          int retryTimesWhenSendFailed = 2;
+          #          int retryTimesWhenSendAsyncFailed = 2;
+          #          boolean retryNextServer = false;
           #消费者配置
-#          String tags;
-#          String sql;
-#          broadcasting = false;
-#          orderly = false;
-#          delayLevelWhenNextConsume = 0;
-#          suspendCurrentQueueTimeMillis = 1000L;
-#          enabled = true;
-#          pullTimeout = 10000L;
-#          boolean fromStore;
+          #          String tags;
+          #          String sql;
+          #          broadcasting = false;
+          #          orderly = false;
+          #          delayLevelWhenNextConsume = 0;
+          #          suspendCurrentQueueTimeMillis = 1000L;
+          #          enabled = true;
+          #          pullTimeout = 10000L;
+          #          boolean fromStore;
           Resinput:
             consumer:
               delayLevelWhenNextConsume: -1
@@ -83,7 +83,7 @@ spring:
           #基本属性配置 见下官文
           #https://spring-cloud-alibaba-group.github.io/github-pages/2021/en-us/index.html#_spring_cloud_alibaba_rocketmq_binder
       bindings:
-    ###########开发测试组################
+        ###########开发测试组################
         SubmissionOutput:
           destination: sub-topic  #  topic位置
           contentType: application/json  #  消息类型
@@ -112,3 +112,5 @@ logging:
           stream:
             binder:
               rocketmq: INFO
+
+

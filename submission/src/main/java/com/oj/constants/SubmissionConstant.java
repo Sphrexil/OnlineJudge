@@ -16,8 +16,10 @@ public class SubmissionConstant {
     public static final Integer LOCK_TTL_SUBMIT = 300;
     /* redis锁自旋休眠时间 */
     public static final Integer LOCK_SPIN_TIME = 100;
-    /* redis锁key */
-    public static final String LOCK_KEY = "lock";
+    /* redis锁集合LIST key */
+    public static final String SUBMISSION_LIST_LOCK = "SUBMISSION_LIST_LOCK";
+    /* redis锁提交SUBIT key */
+    public static final String SUBMIT_LOCK = "SUBMIT_LOCK";
     /* redis锁分区名 */
     public static final String CACHE_GROUP = "submission";
 }

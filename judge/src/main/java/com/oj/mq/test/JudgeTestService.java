@@ -1,5 +1,6 @@
 package com.oj.mq.test;
 
+import com.oj.constants.GlobalConstant;
 import com.oj.entity.ResultEntity;
 import com.oj.mq.channels.JudgeSink;
 import com.oj.mq.channels.JudgeSource;
@@ -41,12 +42,14 @@ public class JudgeTestService {
         this.redisCache = redisCache;
     }
 
-    @StreamListener(JudgeSink.SubmissionInput)
-    public void judge(Message message) {
-        String key = (String) message.getHeaders().get("key");
-        log.info("消息接收成功123{}",message.getPayload());
-        ResultVo resultVo = new ResultVo(200, 300, "NullGirlfriendException", "Error");
+    @StreamListener(value =JudgeSink.SubmissionInput)
+    public void judge(Message<SubmissionDto> message) {
+        String key = (String) message.getHeaders().get(GlobalConstant.SUBMIT_UNIQUE_TOKEN);
+        SubmissionDto payload =  message.getPayload();
+        log.info("消息接收成功{}",message.getPayload());
+        String language = payload.getLanguage();
+        ResultVo resultVo = new ResultVo(200, 300, "NullGirlfriendException", language+"Error");
         //        ResultEntity resultEntity = new ResultEntity(1L, resultVo, 5L, 1L, 2L, 1, date);
-        redisCache.setCacheObject("result::"+key, resultVo, 20, TimeUnit.SECONDS);
+        redisCache.setCacheObject(GlobalConstant.JUDGED_RESULT_KEY + "::" + key, resultVo, 20, TimeUnit.SECONDS);
     }
 }
