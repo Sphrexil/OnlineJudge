@@ -1,4 +1,4 @@
-package com.oj.mojo.VO;
+package com.oj.pojo.VO;
 
 import com.oj.entity.ProblemEntity;
 import com.oj.entity.TestCaseEntity;

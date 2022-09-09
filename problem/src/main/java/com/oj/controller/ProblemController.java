@@ -3,7 +3,7 @@ package com.oj.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.oj.mojo.VO.CreateProblemVO;
+import com.oj.pojo.VO.CreateProblemVO;
 import com.oj.entity.ProblemEntity;
 import com.oj.entity.TestCaseEntity;
 import com.oj.service.ProblemService;

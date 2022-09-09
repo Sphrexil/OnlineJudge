@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class UerProblemListVo implements Serializable {
-    @NotNull(message = "作者不能为空")
+    @NotNull(message = "作者为空")
     private Long relatedUser;
 
     private Long problemId;
