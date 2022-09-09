@@ -2,6 +2,7 @@ package com.oj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.oj.constants.ProblemConstant;
 import com.oj.dao.ProblemDao;
 import com.oj.entity.ProblemEntity;
 import com.oj.service.ProblemService;
@@ -12,21 +13,31 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.Objects;
 
-import static com.oj.constants.ProblemConstant.IsProblemVisible.ABLE_TO_SEE;
+import static com.oj.constants.ProblemConstant.ProblemDifficultyDegree.DIFFICULT_PROBLEM;
+import static com.oj.constants.ProblemConstant.ProblemDifficultyDegree.SIMPLE_PROBLEM;
 
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> implements ProblemService {
 
     @Override
-    public ResponseResult getProblemList(Integer pageNum, Integer pageSize) {
+    public ResponseResult getProblemList(Integer pageNum, Integer pageSize, Integer difficulty, Boolean isDescByDifficulty) {
 
         // 查询
         LambdaQueryWrapper<ProblemEntity> queryWrapper = new LambdaQueryWrapper<>();
         // 查询可见为1的数据
-        queryWrapper.eq(ProblemEntity::getVisible, ABLE_TO_SEE.getCode())
-                    // 按照时间倒序排列
-                    .orderByDesc(ProblemEntity::getCreateTime);
+        queryWrapper.eq(ProblemEntity::getVisible, ProblemConstant.IsProblemVisible.ABLE_TO_SEE.getCode())
+                // 传了难度就筛选出该难度下的题
+                .eq(Objects.nonNull(difficulty) &&
+                                difficulty >= SIMPLE_PROBLEM.getCode() &&
+                                difficulty <= DIFFICULT_PROBLEM.getCode()
+                        , ProblemEntity::getDifficulty, difficulty)
+                // 按照时间倒序排列
+                .orderByDesc(ProblemEntity::getCreateTime)
+                // 默认简单题在前
+                .orderByAsc(Objects.isNull(isDescByDifficulty) || !isDescByDifficulty, ProblemEntity::getDifficulty)
+                // 选择难题在前
+                .orderByDesc(Objects.nonNull(isDescByDifficulty) && isDescByDifficulty, ProblemEntity::getDifficulty);
         // 分页
         // 判空
         IPage<ProblemEntity> problemIPage = PageUtils.getPage(pageNum, pageSize, ProblemEntity.class);
@@ -51,7 +62,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
         /* TODO 问题是否可见需要定义为常量 */
         ProblemEntity problem = this.getOne(new LambdaQueryWrapper<ProblemEntity>()
                 .eq(ProblemEntity::getShowId, showId)
-                .eq(ProblemEntity::getVisible, ABLE_TO_SEE.getCode()));
+                .eq(ProblemEntity::getVisible, ProblemConstant.IsProblemVisible.ABLE_TO_SEE.getCode()));
 
         return ResponseResult.okResult(problem);
     }

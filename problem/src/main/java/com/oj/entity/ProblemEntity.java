@@ -74,7 +74,7 @@ public class ProblemEntity implements Serializable {
 	/**
 	 * 题目难度
 	 */
-	private String difficulty;
+	private Integer difficulty;
 	/**
 	 * 数据范围
 

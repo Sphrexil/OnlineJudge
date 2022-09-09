@@ -39,9 +39,9 @@ public class ProblemController {
             @ApiImplicitParam(name = "pageNum", value = "页码", required=true, dataType="int"),
             @ApiImplicitParam(name = "pageSize", value = "页码大小", required=true, dataType="int")
     })
-    public ResponseResult list(Integer pageNum,Integer pageSize){
+    public ResponseResult list(@NotNull Integer pageNum, @NotNull Integer pageSize, Integer difficulty, Boolean isDescByDifficulty){
 
-        return problemService.getProblemList(pageNum, pageSize);
+        return problemService.getProblemList(pageNum, pageSize, difficulty, isDescByDifficulty);
     }
 
 
@@ -101,5 +101,4 @@ public class ProblemController {
 
         return ResponseResult.okResult();
     }
-
 }

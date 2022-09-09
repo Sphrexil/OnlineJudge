@@ -12,7 +12,7 @@ public class ProblemConstant {
     public enum IsProblemVisible {
         ABLE_TO_SEE(1, "可见"),
         UNABLE_TO_SEE(0, "不可见");
-        private int code;
+        private Integer code;
         private String msg;
 
         public int getCode() {
@@ -28,8 +28,26 @@ public class ProblemConstant {
             this.msg = msg;
         }
     }
+
     /* 问题的难度 */
-    public static final String DIFFICULT_PROBLEM = "困难";
-    public static final String MEDIUM_PROBLEM = "中等";
-    public static final String SIMPLE_PROBLEM = "简单";
+    public enum ProblemDifficultyDegree {
+        DIFFICULT_PROBLEM(3, "困难"),
+        MEDIUM_PROBLEM(2, "中等"),
+        SIMPLE_PROBLEM(1, "简单");
+        private Integer code;
+        private String msg;
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        ProblemDifficultyDegree(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+    }
 }
