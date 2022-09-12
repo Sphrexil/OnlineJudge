@@ -1,19 +1,19 @@
 package com.oj.TestUtils;
 
 import com.oj.pojo.vo.TestResultVo;
+import com.oj.utils.MD5Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Judge {
     private static final Logger log = LoggerFactory.getLogger(Judge.class);
     public static TestResultVo process(JudgingArgument judgingArgument) throws CompileException, IOException {
         checkFolderExists();
         String src = judgingArgument.getCodeSrc();
-        String fileName = MD5Utils.digest(src.getBytes(StandardCharsets.UTF_8));
+        String fileName = MD5Utils.GetStringMD5(src.getBytes(StandardCharsets.UTF_8));
         compileProgram(src, fileName);
         TestParam testParam = new TestParam(judgingArgument, fileName, getPWD());
         TestResultVo testResultVo = new TestResultVo();
@@ -78,7 +78,7 @@ public class Judge {
             }
             TestResultVo testResultVo = JSONUtil.parseObject(result.toString(), TestResultVo.class);
             String outputMD5 = MD5Utils.getMD5Checksum(testParam.getOutputPath());
-            String stdMD5 = MD5Utils.digest(stdout.getBytes());
+            String stdMD5 = MD5Utils.GetStringMD5(stdout.getBytes());
             if(!outputMD5.equals(stdMD5)){
                   testResultVo.setResult(6);
             }
