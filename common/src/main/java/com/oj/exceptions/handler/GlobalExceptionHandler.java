@@ -4,6 +4,7 @@ import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.utils.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,10 +27,24 @@ public class GlobalExceptionHandler {
         //打印异常信息
         log.error("出现了未知异常:",e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(ResultCode.UNKNOWN_EXCEPTION.getCode(),ResultCode.UNKNOWN_EXCEPTION.getMsg());
+        return ResponseResult.errorResult(ResultCode.UNKNOWN_EXCEPTION.getCode(), ResultCode.UNKNOWN_EXCEPTION.getMsg());
+    }
+    @ExceptionHandler(SystemException.class)
+    public ResponseResult systemExceptionHandler(SystemException e) {
+        return ResponseResult.okResult(e.getCode(), e.getMsg());
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseResult authExceptionHandler(InternalAuthenticationServiceException e) {
+
+        if (e.getCause() instanceof SystemException) {
+            SystemException systemException = (SystemException) e.getCause();
+            return ResponseResult.errorResult(systemException.getCode(), systemException.getMsg());
+        }
+        return ResponseResult.errorResult(ResultCode.UNKNOWN_EXCEPTION.getCode(), e.getCause().getMessage());
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseResult systemExceptionHandler(MethodArgumentNotValidException e){
+    public ResponseResult validateExceptionHandler(MethodArgumentNotValidException e){
         //打印异常信息
         String msg = e.getBindingResult().getFieldError().getDefaultMessage();
         log.error("出现了异常!:",e);

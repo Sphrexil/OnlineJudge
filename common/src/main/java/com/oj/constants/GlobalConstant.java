@@ -15,4 +15,8 @@ public class GlobalConstant {
     public static final String JUDGED_RESULT_KEY = "JUDGED_RESULT_KEY";
     /* judge提交消息中消息头对应的唯一表示 */
     public static final String SUBMIT_UNIQUE_TOKEN = "SUBMIT_UNIQUE_TOKEN";
+    /* redis存的登录token键 */
+    public static final String RECEPTION_LOGIN_TOKEN = "RECEPTION_LOGIN_TOKEN";
+    /* 请求头认证token */
+    public static final String LOGIN_TOKEN = "token";
 }

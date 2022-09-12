@@ -1,6 +1,8 @@
 package com.oj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.oj.enums.ResultCode;
+import com.oj.exceptions.SystemException;
 import com.oj.user.LoginUser;
 import com.oj.dao.UserDao;
 import com.oj.user.UserEntity;
@@ -27,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //判断是否查询用户，如果没有就抛出异常
         if(Objects.isNull(user))
         {
-            throw new RuntimeException("用户不存在");
+            throw new SystemException(ResultCode.USER_ACCOUNT_NOT_EXIST);
         }
         //返回Userinfo
         //TODO 查询权限信息封装

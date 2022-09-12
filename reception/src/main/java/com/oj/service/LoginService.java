@@ -1,5 +1,6 @@
 package com.oj.service;
 
+import com.oj.pojo.vo.UserReceptionLoginVo;
 import com.oj.user.UserEntity;
 import com.oj.utils.ResponseResult;
 
@@ -11,7 +12,7 @@ import com.oj.utils.ResponseResult;
  */
 public interface LoginService {
 
-    ResponseResult login(UserEntity user);
+    ResponseResult login(UserReceptionLoginVo user);
 
     ResponseResult logout();
 

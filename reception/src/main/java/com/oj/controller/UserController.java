@@ -1,6 +1,7 @@
 package com.oj.controller;
 
 
+import com.oj.pojo.vo.UserRegisterVo;
 import com.oj.user.UserEntity;
 import com.oj.service.RegisterService;
 import com.oj.service.UserService;
@@ -28,7 +29,7 @@ public class UserController {
         return userService.UpdateUserInfo(user);
     }
     @PostMapping("/register")
-    public ResponseResult register(@RequestBody UserEntity user)
+    public ResponseResult register(@RequestBody UserRegisterVo user)
     {
         return RegisterService.register(user);
     }

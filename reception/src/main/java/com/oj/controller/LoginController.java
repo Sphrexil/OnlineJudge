@@ -1,6 +1,6 @@
 package com.oj.controller;
 
-import com.oj.user.UserEntity;
+import com.oj.pojo.vo.UserReceptionLoginVo;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.service.LoginService;
@@ -19,7 +19,7 @@ public class LoginController {
     private LoginService LoginService;
 
     @PostMapping("/login")
-    public ResponseResult login(@RequestBody UserEntity user){
+    public ResponseResult login(@RequestBody UserReceptionLoginVo user){
         if(!StringUtils.hasText(user.getUserName())){
             //提示必须要传用户名
             throw new SystemException(ResultCode.USERNAME_NOT_NULL);
