@@ -1,4 +1,4 @@
-package com.oj.TestUtils;
+package com.oj.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ public class MD5Utils {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final String OUTPUT_FORMAT = "%-20s:%s";
 
-    public static String digest(byte[] input) {
+    public static String GetStringMD5(byte[] input) {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");

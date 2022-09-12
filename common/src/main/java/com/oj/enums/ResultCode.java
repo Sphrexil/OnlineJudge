@@ -29,6 +29,8 @@ public enum ResultCode {
     NO_PERMISSION(3001, "没有权限"),
     /* 系统错误 */
     UNKNOWN_EXCEPTION(4001,"系统未知异常"),
+    /* 提交的代码重复 */
+    CODE_ALREADY_EXISTS(4000, "代码已经存在"),
     /* 提交错误 */
     CODE_BLANK(5001, "提交代码为空或空串"),
     AUTHOR_BLANK(5002, "作者为空"),
