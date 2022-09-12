@@ -1,13 +1,10 @@
 package com.oj.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-import com.oj.dao.TestCaseDao;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

@@ -28,6 +28,7 @@
         <swagger-ui.version>1.9.3</swagger-ui.version>
         <flyway.version>6.1.0</flyway.version>
         <redission.version>3.17.5</redission.version>
+        <jjwt.version>0.9.0</jjwt.version>
     </properties>
 
 
@@ -60,12 +61,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-
-        <!--web基础件-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!--远程调用-->
@@ -157,15 +152,35 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!--分布式锁-->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
+        </dependency>
+
+        <!--SpringSecurity启动器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!--jwt依赖-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
         </dependency>
 
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+
+            <!--jwt依赖-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.redisson</groupId>

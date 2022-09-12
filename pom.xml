@@ -15,6 +15,7 @@
         <module>common</module>
         <module>submission</module>
         <module>judge</module>
+        <module>reception</module>
     </modules>
 
     <properties>

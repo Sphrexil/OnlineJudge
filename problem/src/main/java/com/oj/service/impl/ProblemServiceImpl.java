@@ -13,9 +13,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.Objects;
 
-import static com.oj.constants.ProblemConstant.ProblemDifficultyDegree.DIFFICULT_PROBLEM;
-import static com.oj.constants.ProblemConstant.ProblemDifficultyDegree.SIMPLE_PROBLEM;
-
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> implements ProblemService {
@@ -29,8 +26,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
         queryWrapper.eq(ProblemEntity::getVisible, ProblemConstant.IsProblemVisible.ABLE_TO_SEE.getCode())
                 // 传了难度就筛选出该难度下的题
                 .eq(Objects.nonNull(difficulty) &&
-                                difficulty >= SIMPLE_PROBLEM.getCode() &&
-                                difficulty <= DIFFICULT_PROBLEM.getCode()
+                                difficulty >= ProblemConstant.ProblemDifficultyDegree.SIMPLE_PROBLEM.getCode() &&
+                                difficulty <= ProblemConstant.ProblemDifficultyDegree.DIFFICULT_PROBLEM.getCode()
                         , ProblemEntity::getDifficulty, difficulty)
                 // 按照时间倒序排列
                 .orderByDesc(ProblemEntity::getCreateTime)
