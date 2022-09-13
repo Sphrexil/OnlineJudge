@@ -39,6 +39,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!--邮箱验证-->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>

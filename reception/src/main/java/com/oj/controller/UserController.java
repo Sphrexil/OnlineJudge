@@ -6,6 +6,7 @@ import com.oj.user.UserEntity;
 import com.oj.service.RegisterService;
 import com.oj.service.UserService;
 import com.oj.utils.ResponseResult;
+import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ public class UserController {
     private RegisterService RegisterService;
 
     @GetMapping("/userInfo")
+    @ApiImplicitParam(name = "token", value = "token", required = true, dataType = "String", paramType = "header")
     public ResponseResult userInfo(){
         return userService.userInfo();
     }

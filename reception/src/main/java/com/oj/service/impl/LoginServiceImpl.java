@@ -106,20 +106,20 @@ public class LoginServiceImpl implements LoginService {
             throw new SystemException(ResultCode.OPERATION_TO_FREQUENT);
         }
         // 生成验证码并存入redis时效为5分钟
-        Long code = Math.round(Math.random() * 10000);
-        redisCache.setCacheObject(ReceptionConstant.MAIL_CODE + "::" + to,
-                String.valueOf(code), ReceptionConstant.MAIL_CODE_TTL, TimeUnit.MINUTES);
-
         // 整合消息队列
-        boolean flag = mailSource.mailOutput().send(MessageBuilder.withPayload(code + "-" + to).build());
-
-        return flag ? ResponseResult.okResult(code) : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
+        boolean flag = mailSource.mailOutput().send(MessageBuilder.withPayload(to).build());
+        return flag ? ResponseResult.okResult() : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
     }
 
     @StreamListener(value = MailSink.MailInput)
-    public void sendMailCode(@Payload String msg) {
-        String code = msg.split("-")[0];
-        String to = msg.split("-")[1];
+    public void sendMailCode(@Payload String to) {
+
+        Long code = Math.round(Math.random() * 10000);
+        if (code < 1000) {
+            code *= 10;
+        }
+        redisCache.setCacheObject(ReceptionConstant.MAIL_CODE + "::" + to,
+                String.valueOf(code), ReceptionConstant.MAIL_CODE_TTL, TimeUnit.MINUTES);
         try {
             // 渲染指定的发送邮件的模板，并在需要加上相关语句地方进行用id查询组件
             String html = MailUtils.readHtmlToString(ReceptionConstant.MAIL_HTML_TEMPLATE);
