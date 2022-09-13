@@ -1,6 +1,7 @@
 package com.oj.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.oj.constants.GlobalConstant;
 import com.oj.user.LoginUser;
 import com.oj.enums.ResultCode;
 import com.oj.utils.JwtUtil;
@@ -31,7 +32,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //获取请求头中的token
-        String token = request.getHeader("token");
+        String token = request.getHeader(GlobalConstant.LOGIN_TOKEN);
         if(!StringUtils.hasText(token)){
             //说明该接口不需要登录  直接放行
             filterChain.doFilter(request, response);
@@ -51,7 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         String userId = claims.getSubject();
         //从redis中获取用户信息
-        LoginUser loginUser = redisCache.getCacheObject("receptionLogin:" + userId);
+        LoginUser loginUser = redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + userId);
         //如果获取不到
         if(Objects.isNull(loginUser)){
             //说明登录过期  提示重新登录

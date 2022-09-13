@@ -1,4 +1,4 @@
-package com.oj.service.impl;
+package com.oj.user.service;
 
 import com.alibaba.fastjson.JSON;
 import com.oj.enums.ResultCode;

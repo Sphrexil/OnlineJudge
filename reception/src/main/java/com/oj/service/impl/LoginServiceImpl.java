@@ -6,6 +6,8 @@ import com.oj.constant.ReceptionConstant;
 import com.oj.constants.GlobalConstant;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
+import com.oj.mq.channels.MailSink;
+import com.oj.mq.channels.MailSource;
 import com.oj.pojo.vo.UserInfoVo;
 import com.oj.pojo.vo.UserLoginVo;
 import com.oj.pojo.vo.UserReceptionLoginVo;
@@ -17,6 +19,9 @@ import com.oj.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,6 +46,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private MailSource mailSource;
+
 
     @Override
     public ResponseResult login(UserReceptionLoginVo user) {
@@ -93,7 +101,7 @@ public class LoginServiceImpl implements LoginService {
             throw new SystemException(ResultCode.EMAIL_NOT_NULL);
         }
         // TODO 反复获取验证redis，可以考虑抽取方法
-        // 定义发送间隔为60s
+        // 定义发送间隔为60s,查验是否还在间隔期
         if (Objects.nonNull(redisCache.getCacheObject(ReceptionConstant.VALIDATE_CODE_TIME_LOCK + "::" + to))) {
             throw new SystemException(ResultCode.OPERATION_TO_FREQUENT);
         }
@@ -101,8 +109,17 @@ public class LoginServiceImpl implements LoginService {
         Long code = Math.round(Math.random() * 10000);
         redisCache.setCacheObject(ReceptionConstant.MAIL_CODE + "::" + to,
                 String.valueOf(code), ReceptionConstant.MAIL_CODE_TTL, TimeUnit.MINUTES);
-        boolean flag = false;
 
+        // 整合消息队列
+        boolean flag = mailSource.mailOutput().send(MessageBuilder.withPayload(code + "-" + to).build());
+
+        return flag ? ResponseResult.okResult(code) : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
+    }
+
+    @StreamListener(value = MailSink.MailInput)
+    public void sendMailCode(@Payload String msg) {
+        String code = msg.split("-")[0];
+        String to = msg.split("-")[1];
         try {
             // 渲染指定的发送邮件的模板，并在需要加上相关语句地方进行用id查询组件
             String html = MailUtils.readHtmlToString(ReceptionConstant.MAIL_HTML_TEMPLATE);
@@ -113,11 +130,9 @@ public class LoginServiceImpl implements LoginService {
             mailUtils.sendMail(to, ReceptionConstant.MAIL_UNIFIED_SUBJECT, result);
             redisCache.setCacheObject(ReceptionConstant.VALIDATE_CODE_TIME_LOCK + "::" + to, UUID.randomUUID(),
                     ReceptionConstant.MAIL_SEND_INTERVAL, TimeUnit.SECONDS);
-            flag = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new SystemException(ResultCode.UNKNOWN_EXCEPTION);
         }
-        return flag ? ResponseResult.okResult(code) : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
     }
 }

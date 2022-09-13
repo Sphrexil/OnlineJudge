@@ -43,6 +43,30 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+        ### mq配置
+    stream:
+      rocketmq:
+        binder:
+          name-server: 192.168.1.129:9876
+          enable-msg-trace: true
+        bindings:
+          Mailinput:
+            consumer:
+              delayLevelWhenNextConsume: -1
+              group: mail-group
+          MailOutput:
+            producer:
+              transactional: false
+              group: mail-group
+      bindings:
+        Mailinput:
+          destination: mail-topic  #  topic位置
+          contentType: application/json  #  消息类型
+          group: mail-group #  生产者组别
+        MailOutput:
+          destination: mail-topic  #  topic位置
+          contentType: application/json  #  消息类型
+          group: mail-group #  生产者组别
   #####################################mybatis-plus配置#####################################
 mybatis-plus:
   configuration:
