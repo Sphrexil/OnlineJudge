@@ -56,11 +56,10 @@ public class RegisterServiceImpl extends ServiceImpl<UserDao, UserEntity> implem
         if (userEmailExist(user.getEmail())) {
             throw new SystemException(ResultCode.EMAIL_ALREADY_EXIST);
         }
+        mailUtils.checkMailCode(user.getCode(), user.getEmail());
 
         String encode = passwordEncoder.encode(user.getPassword());
         //
-        mailUtils.checkMailCode(user.getCode(), user.getEmail());
-
         user.setPassword(encode);
         UserEntity userEntity = BeanCopyUtils.copyBean(user, UserEntity.class);
         save(userEntity);
