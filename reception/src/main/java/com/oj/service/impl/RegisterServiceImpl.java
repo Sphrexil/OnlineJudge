@@ -49,17 +49,19 @@ public class RegisterServiceImpl extends ServiceImpl<UserDao, UserEntity> implem
             throw new SystemException(ResultCode.EMAIL_NOT_NULL);
         }
         //解析请求中的数据,对用户密码进行加密
+        // 用户名重复注册
         if(userNameExist(user.getUserName()))
         {
             throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_EXIST);
         }
+        // 邮件重复注册
         if (userEmailExist(user.getEmail())) {
             throw new SystemException(ResultCode.EMAIL_ALREADY_EXIST);
         }
+        // 检查验证码是否正确
         mailUtils.checkMailCode(user.getCode(), user.getEmail());
-
+        // 加密
         String encode = passwordEncoder.encode(user.getPassword());
-        //
         user.setPassword(encode);
         UserEntity userEntity = BeanCopyUtils.copyBean(user, UserEntity.class);
         save(userEntity);

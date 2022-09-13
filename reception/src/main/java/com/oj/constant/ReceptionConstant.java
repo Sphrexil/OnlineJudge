@@ -8,7 +8,7 @@ package com.oj.constant;
  */
 public class ReceptionConstant {
 
-    public static final String RECEPTION_LOGIN = "RECEPTION-LOGIN";
+
 
     /* 防止验证码发得过于频繁 */
     public static final String VALIDATE_CODE_TIME_LOCK = "VALIDATE_CODE_TIME_LOCK";

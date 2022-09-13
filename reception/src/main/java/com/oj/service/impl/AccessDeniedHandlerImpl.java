@@ -18,6 +18,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         accessDeniedException.printStackTrace();
+        // 权限认证失败
         ResponseResult result = ResponseResult.errorResult(ResultCode.NO_PERMISSION);
         //响应给前端
         WebUtils.renderString(response, JSON.toJSONString(result));

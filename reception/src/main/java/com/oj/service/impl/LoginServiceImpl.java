@@ -1,6 +1,7 @@
 package com.oj.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.oj.constant.ReceptionConstant;
 import com.oj.constants.GlobalConstant;
 import com.oj.enums.ResultCode;
@@ -8,8 +9,10 @@ import com.oj.exceptions.SystemException;
 import com.oj.pojo.vo.UserInfoVo;
 import com.oj.pojo.vo.UserLoginVo;
 import com.oj.pojo.vo.UserReceptionLoginVo;
+import com.oj.service.UserService;
 import com.oj.user.LoginUser;
 import com.oj.service.LoginService;
+import com.oj.user.UserEntity;
 import com.oj.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,6 +39,8 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private MailUtils mailUtils;
 
+    @Autowired
+    private UserService userService;
 
     @Override
     public ResponseResult login(UserReceptionLoginVo user) {
@@ -43,6 +48,12 @@ public class LoginServiceImpl implements LoginService {
             //提示必须要传用户名
             throw new SystemException(ResultCode.USERNAME_NOT_NULL);
         }
+        //判断是否重复登录
+        UserEntity alreadyLoginUser = userService.getOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, user.getUserName()));
+        if (Objects.nonNull(redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + alreadyLoginUser.getId()))) {
+            throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_LOGIN);
+        }
+        //进行认证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         //判断是否认证通过
@@ -56,7 +67,6 @@ public class LoginServiceImpl implements LoginService {
         String jwt = JwtUtil.createJWT(userId);
         //把用户信息存入redis
         redisCache.setCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + userId, loginUser);
-
         //把token和userinfo封装 返回
         //把User转换成UserInfoVo
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(loginUser.getUser(), UserInfoVo.class);
@@ -78,30 +88,35 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResponseResult sendMail(String to) {
-
+        // 邮件判空
         if (!StringUtils.hasText(to)) {
             throw new SystemException(ResultCode.EMAIL_NOT_NULL);
         }
+        // TODO 反复获取验证redis，可以考虑抽取方法
+        // 定义发送间隔为60s
         if (Objects.nonNull(redisCache.getCacheObject(ReceptionConstant.VALIDATE_CODE_TIME_LOCK + "::" + to))) {
             throw new SystemException(ResultCode.OPERATION_TO_FREQUENT);
         }
-
+        // 生成验证码并存入redis时效为5分钟
         Long code = Math.round(Math.random() * 10000);
         redisCache.setCacheObject(ReceptionConstant.MAIL_CODE + "::" + to,
                 String.valueOf(code), ReceptionConstant.MAIL_CODE_TTL, TimeUnit.MINUTES);
         boolean flag = false;
 
         try {
+            // 渲染指定的发送邮件的模板，并在需要加上相关语句地方进行用id查询组件
             String html = MailUtils.readHtmlToString(ReceptionConstant.MAIL_HTML_TEMPLATE);
             Document doc = Jsoup.parse(html);
             doc.getElementById(ReceptionConstant.MAIL_TEMPLATE_DIV_ID).html(String.valueOf(code));
             String result = doc.toString();
+            // 进行发送邮件，成功则进行60s的上锁
             mailUtils.sendMail(to, ReceptionConstant.MAIL_UNIFIED_SUBJECT, result);
             redisCache.setCacheObject(ReceptionConstant.VALIDATE_CODE_TIME_LOCK + "::" + to, UUID.randomUUID(),
                     ReceptionConstant.MAIL_SEND_INTERVAL, TimeUnit.SECONDS);
             flag = true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SystemException(ResultCode.UNKNOWN_EXCEPTION);
         }
         return flag ? ResponseResult.okResult(code) : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
     }
