@@ -25,6 +25,8 @@ public enum ResultCode {
     NICKNAME_NOT_NULL(2012,"名称不能为空" ),
     EMAIL_NOT_NULL(2013,"邮箱不能为空" ),
     USER_NOT_EXIST(2014,"用户不存在"),
+    OPERATION_TO_FREQUENT(2015, "操作过于频繁"),
+    EMAIL_ALREADY_EXIST(2016, "邮箱已经被注册"),
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     /* 系统错误 */
@@ -37,7 +39,9 @@ public enum ResultCode {
     PROBLEM_BLANK(5003, "问题为空"),
     SUBMIT_RESULT_BLANK(5004, "结果获取失败为空"),
     /*  页码错误 */
-    PAGE_BLANK_OR_ZERO(5005, "页码或者页码大小不能为空或0");
+    PAGE_BLANK_OR_ZERO(5005, "页码或者页码大小不能为空或0"),
+    VALIDATE_CODE_ERROR(5006, "验证码错误"),
+    SEND_MAIL_FAIL(5007, "验证码发送失败，请检查邮箱是否正确");
 
     private Integer code;
     private String msg;

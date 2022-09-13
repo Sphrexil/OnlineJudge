@@ -4,6 +4,7 @@ package com.oj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.oj.constant.ReceptionConstant;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.dao.UserDao;
@@ -11,13 +12,15 @@ import com.oj.pojo.vo.UserRegisterVo;
 import com.oj.user.UserEntity;
 import com.oj.service.RegisterService;
 import com.oj.utils.BeanCopyUtils;
+import com.oj.utils.MailUtils;
+import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;;
 import io.jsonwebtoken.lang.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -27,6 +30,8 @@ public class RegisterServiceImpl extends ServiceImpl<UserDao, UserEntity> implem
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MailUtils mailUtils;
     @Override
     public ResponseResult register(UserRegisterVo user) {
 
@@ -48,7 +53,13 @@ public class RegisterServiceImpl extends ServiceImpl<UserDao, UserEntity> implem
         {
             throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_EXIST);
         }
+        if (userEmailExist(user.getEmail())) {
+            throw new SystemException(ResultCode.EMAIL_ALREADY_EXIST);
+        }
+
         String encode = passwordEncoder.encode(user.getPassword());
+        //
+        mailUtils.checkMailCode(user.getCode(), user.getEmail());
 
         user.setPassword(encode);
         UserEntity userEntity = BeanCopyUtils.copyBean(user, UserEntity.class);
@@ -61,6 +72,13 @@ public class RegisterServiceImpl extends ServiceImpl<UserDao, UserEntity> implem
 
         LambdaQueryWrapper<UserEntity> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(UserEntity::getUserName,userName);
+        int count = count(queryWrapper);
+        return count > 0;
+    }
+    private boolean userEmailExist(String mail) {
+
+        LambdaQueryWrapper<UserEntity> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserEntity::getEmail,mail);
         int count = count(queryWrapper);
         return count > 0;
     }

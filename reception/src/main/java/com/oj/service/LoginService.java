@@ -16,6 +16,7 @@ public interface LoginService {
 
     ResponseResult logout();
 
+    ResponseResult sendMail(String to);
 }
 
 

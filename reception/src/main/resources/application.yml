@@ -4,6 +4,9 @@ server:
     session:
       timeout: 30m
 
+mail:
+  username: 704907239@qq.com
+
 spring:
   application:
     name: reception
@@ -11,7 +14,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
   datasource:
     username: root
     password: 123
