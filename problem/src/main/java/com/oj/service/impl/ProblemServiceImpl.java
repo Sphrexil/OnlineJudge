@@ -29,12 +29,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
                                 difficulty >= ProblemConstant.ProblemDifficultyDegree.SIMPLE_PROBLEM.getCode() &&
                                 difficulty <= ProblemConstant.ProblemDifficultyDegree.DIFFICULT_PROBLEM.getCode()
                         , ProblemEntity::getDifficulty, difficulty)
-                // 按照时间倒序排列
-                .orderByDesc(ProblemEntity::getCreateTime)
                 // 默认简单题在前
                 .orderByAsc(Objects.isNull(isDescByDifficulty) || !isDescByDifficulty, ProblemEntity::getDifficulty)
                 // 选择难题在前
-                .orderByDesc(Objects.nonNull(isDescByDifficulty) && isDescByDifficulty, ProblemEntity::getDifficulty);
+                .orderByDesc(Objects.nonNull(isDescByDifficulty) && isDescByDifficulty, ProblemEntity::getDifficulty)
+                // 按照时间倒序排列
+                .orderByDesc(ProblemEntity::getCreateTime);
         // 分页
         // 判空
         IPage<ProblemEntity> problemIPage = PageUtils.getPage(pageNum, pageSize, ProblemEntity.class);

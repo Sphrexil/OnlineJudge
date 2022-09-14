@@ -36,10 +36,10 @@ public class ProblemController {
     @GetMapping("/list")
     @ApiOperation(value = "problem列表", notes = "不区分难度,按照时间倒序")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "页码", required=true, dataType="int"),
-            @ApiImplicitParam(name = "pageSize", value = "页码大小", required=true, dataType="int")
+            @ApiImplicitParam(name = "pageNum", value = "页码", required=true, dataType="int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "页码大小", required=true, dataType="int", paramType = "query")
     })
-    public ResponseResult list(@NotNull Integer pageNum, @NotNull Integer pageSize, Integer difficulty, Boolean isDescByDifficulty){
+    public ResponseResult getProblemList(@NotNull Integer pageNum, @NotNull Integer pageSize, Integer difficulty, Boolean isDescByDifficulty){
 
         return problemService.getProblemList(pageNum, pageSize, difficulty, isDescByDifficulty);
     }

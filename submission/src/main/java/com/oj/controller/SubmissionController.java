@@ -30,7 +30,7 @@ public class SubmissionController {
      * 列表
      */
     @GetMapping("/list")
-    public ResponseResult getSubmissionList(@Valid @RequestBody UerProblemListVo uerProblemListVo) {
+    public ResponseResult getSubmissionList(@Valid  UerProblemListVo uerProblemListVo) {
 
         return submissionService.getSubmissionList(uerProblemListVo);
     }
