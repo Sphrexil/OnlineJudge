@@ -28,8 +28,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import java.util.Objects;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -70,11 +70,18 @@ public class LoginServiceImpl implements LoginService {
         }
         //获取userid 生成token
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        mailUtils.checkMailCode(user.getCode(), loginUser.getUser().getEmail());
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
         //把用户信息存入redis
         redisCache.setCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + userId, loginUser);
+        if (StringUtils.hasText(user.getCode())) {
+            mailUtils.checkMailCode(user.getCode(), loginUser.getUser().getEmail());
+        } else {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", userId);
+            map.put("mail", loginUser.getUser().getEmail());
+            return ResponseResult.okResult(map);
+        }
         //把token和userinfo封装 返回
         //把User转换成UserInfoVo
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(loginUser.getUser(), UserInfoVo.class);
@@ -109,6 +116,17 @@ public class LoginServiceImpl implements LoginService {
         // 整合消息队列
         boolean flag = mailSource.mailOutput().send(MessageBuilder.withPayload(to).build());
         return flag ? ResponseResult.okResult() : ResponseResult.errorResult(ResultCode.SEND_MAIL_FAIL);
+    }
+
+    @Override
+    public ResponseResult loginValidate(String code, String userId) {
+        UserEntity user = userService.getById(Long.valueOf(userId));
+        String email = user.getEmail();
+        mailUtils.checkMailCode(code, email);
+        UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
+        String jwt = JwtUtil.createJWT(userId);
+        UserLoginVo vo = new UserLoginVo(jwt, userInfoVo);
+        return ResponseResult.okResult(vo);
     }
 
     @StreamListener(value = MailSink.MailInput)

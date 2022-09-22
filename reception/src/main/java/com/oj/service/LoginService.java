@@ -1,7 +1,6 @@
 package com.oj.service;
 
 import com.oj.pojo.vo.UserReceptionLoginVo;
-import com.oj.user.UserEntity;
 import com.oj.utils.ResponseResult;
 
 /**
@@ -17,6 +16,8 @@ public interface LoginService {
     ResponseResult logout();
 
     ResponseResult sendMail(String to);
+
+    ResponseResult loginValidate(String code, String userId);
 }
 
 
