@@ -58,7 +58,7 @@ public class LoginServiceImpl implements LoginService {
         }
         //判断是否重复登录
         UserEntity alreadyLoginUser = userService.getOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, user.getUserName()));
-        if (Objects.nonNull(redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + alreadyLoginUser.getId()))) {
+        if (Objects.nonNull(alreadyLoginUser) && Objects.nonNull(redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + alreadyLoginUser.getId()))) {
             throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_LOGIN);
         }
         //进行认证
@@ -120,13 +120,26 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResponseResult loginValidate(String code, String userId) {
-        UserEntity user = userService.getById(Long.valueOf(userId));
-        String email = user.getEmail();
-        mailUtils.checkMailCode(code, email);
-        UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
-        String jwt = JwtUtil.createJWT(userId);
-        UserLoginVo vo = new UserLoginVo(jwt, userInfoVo);
+        UserLoginVo vo = null;
+        try {
+            UserEntity user = userService.getById(Long.valueOf(userId));
+
+            String email = user.getEmail();
+
+            mailUtils.checkMailCode(code, email);
+
+            UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
+
+            String jwt = JwtUtil.createJWT(userId);
+
+            vo = new UserLoginVo(jwt, userInfoVo);
+        } catch (Exception e) {
+            redisCache.deleteObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + userId);
+        }
+
+
         return ResponseResult.okResult(vo);
+
     }
 
     @StreamListener(value = MailSink.MailInput)

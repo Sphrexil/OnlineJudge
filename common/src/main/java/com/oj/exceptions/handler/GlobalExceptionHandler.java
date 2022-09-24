@@ -4,6 +4,7 @@ import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.utils.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -34,6 +35,12 @@ public class GlobalExceptionHandler {
         return ResponseResult.okResult(e.getCode(), e.getMsg());
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseResult BadCredentialsException( BadCredentialsException e) {
+        return ResponseResult.errorResult(ResultCode.USER_CREDENTIALS_ERROR);
+    }
+
+
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ResponseResult authExceptionHandler(InternalAuthenticationServiceException e) {
 
@@ -43,6 +50,8 @@ public class GlobalExceptionHandler {
         }
         return ResponseResult.errorResult(ResultCode.UNKNOWN_EXCEPTION.getCode(), e.getCause().getMessage());
     }
+
+    // validate 验证
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseResult validateExceptionHandler(MethodArgumentNotValidException e){
         //打印异常信息

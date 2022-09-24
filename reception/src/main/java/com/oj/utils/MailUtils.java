@@ -77,6 +77,14 @@ public class MailUtils {
         //设置发送方式与接收者
         message.setRecipient(RecipientType.TO, new InternetAddress(email));
 
+        /* 防止被当垃圾邮件 */
+        message.setHeader("X-Priority", "3");
+        message.setHeader("X-MSMail-Priority", "Normal");
+        message.setHeader("X-Mailer", "Microsoft Outlook Express 6.00.2900.2869");
+        message.setHeader("X-MimeOLE", "Produced By Microsoft MimeOLE V6.00.2900.2869");
+        message.setHeader("ReturnReceipt", "1");
+        /* 防止被当垃圾邮件 */
+
         //设置邮件主题
         message.setSubject(subject);
         // message.setText("这是一封激活邮件，请<a href='#'>点击</a>");
