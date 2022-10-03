@@ -35,4 +35,8 @@ public class UserController {
     {
         return RegisterService.register(user);
     }
+    @PostMapping("/userInfo/mail")
+    public ResponseResult getInfoByMail(String mail) {
+        return ResponseResult.okResult();
+    }
 }
