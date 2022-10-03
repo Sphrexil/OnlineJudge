@@ -17,4 +17,5 @@ public class UserReceptionLoginVo {
     private String userName;
     private String password;
     private String code;
+    private Boolean localExist;
 }

@@ -56,10 +56,13 @@ public class LoginServiceImpl implements LoginService {
             //提示必须要传用户名
             throw new SystemException(ResultCode.USERNAME_NOT_NULL);
         }
-        //判断是否重复登录
-        UserEntity alreadyLoginUser = userService.getOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, user.getUserName()));
-        if (Objects.nonNull(alreadyLoginUser) && Objects.nonNull(redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + alreadyLoginUser.getId()))) {
-            throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_LOGIN);
+
+        if (Objects.isNull(user.getLocalExist())) {
+            //判断是否重复登录
+            UserEntity alreadyLoginUser = userService.getOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, user.getUserName()));
+            if (Objects.nonNull(alreadyLoginUser) && Objects.nonNull(redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + alreadyLoginUser.getId()))) {
+                throw new SystemException(ResultCode.USER_ACCOUNT_ALREADY_LOGIN);
+            }
         }
         //进行认证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
@@ -127,6 +130,8 @@ public class LoginServiceImpl implements LoginService {
             String email = user.getEmail();
 
             mailUtils.checkMailCode(code, email);
+
+            redisCache.deleteObject(ReceptionConstant.MAIL_CODE + "::" + email);
 
             UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
 

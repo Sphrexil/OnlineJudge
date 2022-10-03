@@ -45,7 +45,7 @@ spring:
     stream:
       rocketmq:
         binder:
-          name-server: 192.168.1.129:9876
+          name-server: 192.168.10.100:9876
           enable-msg-trace: true
         bindings:
           #开启事务消息需要在这边再次配置 在stream->rocketmq->bindings下配
