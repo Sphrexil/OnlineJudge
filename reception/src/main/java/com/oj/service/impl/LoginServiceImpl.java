@@ -2,7 +2,7 @@ package com.oj.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.oj.constant.ReceptionConstant;
+import com.oj.constants.ReceptionConstant;
 import com.oj.constants.GlobalConstant;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
@@ -16,6 +16,7 @@ import com.oj.user.LoginUser;
 import com.oj.service.LoginService;
 import com.oj.user.UserEntity;
 import com.oj.utils.*;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService {
 
     @Autowired
@@ -150,6 +152,10 @@ public class LoginServiceImpl implements LoginService {
     @StreamListener(value = MailSink.MailInput)
     public void sendMailCode(@Payload String to) {
 
+
+        if (!to.contains("@") && !to.contains(".com")) {
+            return;
+        }
         Long code = Math.round(Math.random() * 10000);
         if (code < 1000) {
             code *= 10;
@@ -167,7 +173,7 @@ public class LoginServiceImpl implements LoginService {
             redisCache.setCacheObject(ReceptionConstant.VALIDATE_CODE_TIME_LOCK + "::" + to, UUID.randomUUID(),
                     ReceptionConstant.MAIL_SEND_INTERVAL, TimeUnit.SECONDS);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("消费出现了异常:{}", e);
             throw new SystemException(ResultCode.UNKNOWN_EXCEPTION);
         }
     }

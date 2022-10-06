@@ -1,7 +1,6 @@
 package com.oj.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.oj.constant.ReceptionConstant;
 import com.oj.constants.GlobalConstant;
 import com.oj.user.LoginUser;
 import com.oj.enums.ResultCode;

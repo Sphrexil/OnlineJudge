@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-public class PageUtils {
+public class PageUtils<T> {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -34,7 +34,7 @@ public class PageUtils {
     /**
      * 列表数据
      */
-    private List<?> list;
+    private List<T> list;
 
     /**
      * @Title: getPage
@@ -61,7 +61,7 @@ public class PageUtils {
      * @param pageSize    每页记录数
      * @param currPage    当前页数
      */
-    public PageUtils(List<?> list, int totalCount, int pageSize, int currPage) {
+    public PageUtils(List<T> list, int totalCount, int pageSize, int currPage) {
         this.list = list;
         this.totalCount = totalCount;
         this.pageSize = pageSize;
@@ -72,7 +72,7 @@ public class PageUtils {
     /**
      * 分页
      */
-    public PageUtils(IPage<?> page) {
+    public PageUtils(IPage<T> page) {
         this.list = page.getRecords();
         this.totalCount = (int)page.getTotal();
         this.pageSize = (int)page.getSize();

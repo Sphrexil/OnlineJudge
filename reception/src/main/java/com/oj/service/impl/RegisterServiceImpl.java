@@ -4,7 +4,6 @@ package com.oj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.oj.constant.ReceptionConstant;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.dao.UserDao;
@@ -13,14 +12,12 @@ import com.oj.user.UserEntity;
 import com.oj.service.RegisterService;
 import com.oj.utils.BeanCopyUtils;
 import com.oj.utils.MailUtils;
-import com.oj.utils.RedisCache;
 import com.oj.utils.ResponseResult;;
 import io.jsonwebtoken.lang.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 

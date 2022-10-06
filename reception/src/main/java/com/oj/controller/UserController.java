@@ -36,4 +36,9 @@ public class UserController {
         return RegisterService.register(user);
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseResult getUserById(@PathVariable("id") Long userId) {
+        return ResponseResult.okResult(userService.getById(userId));
+    }
 }

@@ -1,4 +1,4 @@
-package com.oj.constant;
+package com.oj.constants;
 
 /**
  * description: receptionConstant

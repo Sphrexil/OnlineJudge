@@ -42,7 +42,16 @@ public enum ResultCode {
     /*  页码错误 */
     PAGE_BLANK_OR_ZERO(5005, "页码或者页码大小不能为空或0"),
     VALIDATE_CODE_ERROR(5006, "验证码错误"),
-    SEND_MAIL_FAIL(5007, "验证码发送失败，请检查邮箱是否正确");
+    SEND_MAIL_FAIL(5007, "验证码发送失败，请检查邮箱是否正确"),
+
+
+    /* 文章错误 */
+    Article_NOT_EXIST(6001, "文章不存在"), NULL_CONTENT(6002, "评论为空"), FILE_TYPE_ERROR(6003, "图片格式错误");
+
+
+
+
+
 
     private Integer code;
     private String msg;

@@ -14,7 +14,7 @@ spring:
 
   datasource:
     username: root
-    password: 123
+    password: 123456
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     # type: com.alibaba.druid.pool.DruidDataSource
@@ -45,7 +45,7 @@ spring:
     stream:
       rocketmq:
         binder:
-          name-server: 192.168.1.129:9876
+          name-server: 192.168.10.100:9876
           enable-msg-trace: true
         bindings:
           #开启事务消息需要在这边再次配置 在stream->rocketmq->bindings下配

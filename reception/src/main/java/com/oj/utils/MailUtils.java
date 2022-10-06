@@ -2,7 +2,7 @@ package com.oj.utils;
 
 
 
-import com.oj.constant.ReceptionConstant;
+import com.oj.constants.ReceptionConstant;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +51,7 @@ public class MailUtils {
         props.setProperty("mail.transport.protocol", protocol);
 
         //设置发送邮件的服务器
+        props.setProperty("mail.smtp.host", host);
         props.setProperty("mail.host", host);
         props.setProperty("mail.smtp.auth", "true");// 指定验证为true
 

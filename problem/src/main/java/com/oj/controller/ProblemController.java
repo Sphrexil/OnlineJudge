@@ -2,6 +2,7 @@ package com.oj.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import com.oj.pojo.VO.CreateProblemVO;
 import com.oj.entity.ProblemEntity;
@@ -73,11 +74,13 @@ public class ProblemController {
     public ResponseResult save(@RequestBody CreateProblemVO createProblemVO){
         ProblemEntity problem = createProblemVO.getProblem();
         problemService.save(problem);
-        ArrayList<TestCaseEntity> cases = createProblemVO.getCases();
-        log.info("cases :{}", cases);
-        for (TestCaseEntity i : cases){
-            i.setRelatedProblem(problem.getId());
-            testCaseService.save(i);
+        if (Objects.nonNull(createProblemVO.getCases())) {
+            ArrayList<TestCaseEntity> cases = createProblemVO.getCases();
+            log.info("cases :{}", cases);
+            for (TestCaseEntity i : cases){
+                i.setRelatedProblem(problem.getId());
+                testCaseService.save(i);
+            }
         }
         return ResponseResult.okResult();
     }
@@ -91,14 +94,12 @@ public class ProblemController {
 
         return ResponseResult.okResult();
     }
-
     /**
      * 删除
      */
     @DeleteMapping("/delete")
     public ResponseResult delete(@RequestBody Long[] ids){
 		problemService.removeByIds(Arrays.asList(ids));
-
         return ResponseResult.okResult();
     }
 }
