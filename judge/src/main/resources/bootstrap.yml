@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: judge
-
-  cloud:
-    nacos:
-      config:
-        server-addr: localhost:8848
-

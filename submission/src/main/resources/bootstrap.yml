@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: submission
-
-  cloud:
-    nacos:
-      config:
-        server-addr: localhost:8848
-
