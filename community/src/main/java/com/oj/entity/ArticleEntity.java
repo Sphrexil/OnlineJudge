@@ -20,7 +20,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("sg_article")
+@TableName("article")
 @Accessors(chain = true)
 public class ArticleEntity {
     @TableId

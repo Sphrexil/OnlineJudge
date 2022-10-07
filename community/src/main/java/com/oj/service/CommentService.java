@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface CommentService extends IService<CommentEntity> {
 
-    ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize);
+    ResponseResult commentList(Integer commentType, Long articleId, Integer pageNum, Integer pageSize);
 
     ResponseResult addComment(CommentEntity comment, HttpServletRequest request);
 }

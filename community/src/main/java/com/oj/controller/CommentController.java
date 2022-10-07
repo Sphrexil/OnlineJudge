@@ -17,10 +17,10 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
     @GetMapping("/commentList")
-    public ResponseResult commentList(Long articleId,Integer pageNum,Integer pageSize){
+    public ResponseResult commentList(Integer commentType,Long problemOrArticleId,Integer pageNum,Integer pageSize){
 
 
-        return commentService.commentList(CommentConstants.ARTICLE_COMMENT_TYPE,articleId,pageNum,pageSize);
+        return commentService.commentList(commentType, problemOrArticleId, pageNum, pageSize);
     }
     @PostMapping
     public ResponseResult addComment(@RequestBody CommentEntity comment, HttpServletRequest request){

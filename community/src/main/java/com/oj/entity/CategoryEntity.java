@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("sg_category")
+@TableName("category")
 public class CategoryEntity {
     @TableId
     private Long id;

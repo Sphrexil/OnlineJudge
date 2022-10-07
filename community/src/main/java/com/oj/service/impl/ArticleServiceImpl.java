@@ -77,7 +77,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
         PageUtils<ArticleEntity> pageUtils = new PageUtils<>(listVoIPage);
         List<ArticleEntity> articles = pageUtils.getList();
         //查询categoryName
-        articles.stream().map(article -> article.setCategoryName(
+        articles = articles.stream().map(article -> article.setCategoryName(
                 categoryMapper.selectById(article.getCategoryId()).getName())).collect(Collectors.toList());
         //articleId去查询articleName进行设置
 //        for (Article article : articles) {
@@ -87,7 +87,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
 
         //封装查询结果
-        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(pageUtils.getList(), ArticleListVo.class);
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
 
         for (ArticleListVo articleListVo : articleListVos) {
             Long userId = articleListVo.getCreateBy();
@@ -107,12 +107,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
         //根据id查询文章
         ArticleEntity article = getById(id);
+        if (Objects.isNull(article)) {
+            throw new SystemException(ResultCode.Article_NOT_EXIST);
+        }
         if (!article.getDelFlag().equals(ArticleConstants.ARTICLE_DEL_STATUS_NORMAL)) {
             throw new SystemException(ResultCode.Article_NOT_EXIST);
         }
         //从redis中获取
-        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
-        article.setViewCount(viewCount.longValue());
+        Long viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        if (Objects.isNull(viewCount)) {
+            viewCount = article.getViewCount();
+        }
+        article.setViewCount(viewCount);
         //转换成VO
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         //根据分类id查询分类名

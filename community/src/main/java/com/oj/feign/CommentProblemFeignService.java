@@ -5,8 +5,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient("reception")
-public interface ArticleUseFeignService {
-    @GetMapping("/user/{id}")
-    ResponseResult getUserById(@PathVariable("id") Long userId);
+import javax.validation.constraints.NotNull;
+
+@FeignClient("problem")
+public interface CommentProblemFeignService {
+    @GetMapping("/problem/info/{id}")
+    ResponseResult getProblemById(@PathVariable("id") @NotNull Long id);
 }

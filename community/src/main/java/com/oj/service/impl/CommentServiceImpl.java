@@ -11,6 +11,8 @@ import com.oj.entity.CommentEntity;
 import com.oj.enums.ResultCode;
 import com.oj.exceptions.SystemException;
 import com.oj.feign.ArticleUseFeignService;
+import com.oj.feign.CommentProblemFeignService;
+import com.oj.pojo.dto.CommentProblemDto;
 import com.oj.pojo.vo.CommentVo;
 import com.oj.service.CommentService;
 import com.oj.user.UserEntity;
@@ -34,14 +36,18 @@ import java.util.Objects;
  * @author makejava
  * @since 2022-04-09 15:29:55
  */
+
+
 @Service("CommentService")
 public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> implements CommentService {
 
     @Autowired
     private ArticleUseFeignService feignService;
+    @Autowired
+    private CommentProblemFeignService problemFeignService;
 
     @Override
-    public ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize) {
+    public ResponseResult commentList(Integer commentType, Long problemOrArticleId, Integer pageNum, Integer pageSize) {
 
 
         //获取根评论
@@ -49,11 +55,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
 
         //通过文章Id获取评论
         LambdaQueryWrapper<CommentEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CommentConstants.ARTICLE_COMMENT_TYPE.equals(commentType), CommentEntity::getArticleId, articleId);
+        queryWrapper.eq(CommentConstants.ARTICLE_COMMENT_TYPE.equals(commentType), CommentEntity::getArticleId, problemOrArticleId);
+//        if (CommentConstants.PROBLEM_COMMENT_TYPE.equals(commentType)) {
+//            CommentProblemDto problem = (CommentProblemDto) problemFeignService.getProblemById(problemOrArticleId).getData(new TypeReference<CommentProblemDto>() {
+//            });
+//        }
+        queryWrapper.eq(CommentConstants.PROBLEM_COMMENT_TYPE.equals(commentType), CommentEntity::getProblemId, problemOrArticleId);
         //根评论的rootId为-1
         //评论类型
         queryWrapper.eq(CommentEntity::getRootId, CommentConstants.COMMENT_ROOT);
-        queryWrapper.eq(CommentEntity::getType, commentType);
+//        queryWrapper.eq(CommentEntity::getType, commentType);
         //分页查询
         IPage<CommentEntity> iPage = PageUtils.getPage(pageNum, pageSize, CommentEntity.class);
 

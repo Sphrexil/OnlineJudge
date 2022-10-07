@@ -20,15 +20,17 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("sg_comment")
+@TableName("comment")
 public class CommentEntity {
     @TableId
     private Long id;
 
     //评论类型（0代表文章评论，1代表友链评论）
-    private String type;
+    private Integer type;
     //文章id
     private Long articleId;
+    //问题id
+    private Long problemId;
     //根评论id
     private Long rootId;
     //评论内容
