@@ -37,4 +37,29 @@ public class ResultVo {
     private String compileError;
 
     private String status = "";
+
+    private WrongSample wrongSample = new WrongSample();
+
+
+    public ResultVo(Integer memoryUsage, Integer timeUsage, String compileError, String status) {
+        this.memoryUsage = memoryUsage;
+        this.timeUsage = timeUsage;
+        this.compileError = compileError;
+        this.status = status;
+    }
+
+    public void setWrongSample (String in, String out, String standardOut) {
+        this.wrongSample.in = in;
+        this.wrongSample.out = out;
+        this.wrongSample.standardOut = standardOut;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class WrongSample{
+        String in;
+        String out;
+        String standardOut;
+    }
 }

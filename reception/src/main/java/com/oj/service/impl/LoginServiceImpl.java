@@ -174,7 +174,10 @@ public class LoginServiceImpl implements LoginService {
                     ReceptionConstant.MAIL_SEND_INTERVAL, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.info("消费出现了异常:{}", e);
-            throw new SystemException(ResultCode.UNKNOWN_EXCEPTION);
+            return;
+//            throw new SystemException(ResultCode.UNKNOWN_EXCEPTION);
+        } finally {
+
         }
     }
 }

@@ -86,6 +86,9 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
                 .eq(Objects.nonNull(language), SubmissionStatusEntity::getLanguage, language)
                 .orderByDesc(SubmissionStatusEntity::getCreateTime);
         // TODO 分页，需要根据需求封装vo返回
+        if (uerProblemListVo.getPageNum() == null || uerProblemListVo.getPageSize() == null) {
+            return ResponseResult.okResult(list(queryWrapper));
+        }
         IPage<SubmissionStatusEntity> submissionIPage = PageUtils.getPage(pageNum, pageSize, SubmissionStatusEntity.class);
         page(submissionIPage, queryWrapper);
         pageData = new PageUtils(submissionIPage);
@@ -95,12 +98,13 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionDao, Submission
     @Override
     @CacheEvict(value = SubmissionConstant.CACHE_GROUP, key = "'getSubmissionList' + #submission.relatedUser+#submission.relatedProblem")
     public ResponseResult submit(SubmissionStatusEntity submission) {
+
         //获取提交代码MD5值，并在前面加上问题id
         String CodeMD5 = MD5Utils.GetStringMD5((submission.getCode() + submission.getCode()).getBytes());
         boolean redisQueryResult =  redisCache.redisTemplate.hasKey(CodeMD5);;
         ResponseResult finalResult;
         if(redisQueryResult){
-            throw new SystemException(ResultCode.SUBMIT_RESULT_BLANK);
+            throw new SystemException(ResultCode.CODE_ALREADY_EXISTS);
         }
         redisCache.setCacheObject(CodeMD5, "EXISTS", 1, TimeUnit.DAYS);
         // 这里加上language的设置

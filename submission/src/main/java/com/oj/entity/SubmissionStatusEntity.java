@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 
@@ -26,7 +27,7 @@ public class SubmissionStatusEntity implements Serializable {
 	/**
 	 *	提交代码
 	 */
-	@NotBlank(message = "提交代码为空或空串")
+	@NotEmpty(message = "提交代码为空或空串")
 	private String code;
 	/**
 	 *	创建时间

@@ -1,4 +1,4 @@
-package com.oj.pojo.dto;
+package com.oj.service.pojo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oj.TestUtils.SingleCase;

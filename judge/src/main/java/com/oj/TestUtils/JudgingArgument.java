@@ -1,7 +1,7 @@
 package com.oj.TestUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.oj.pojo.dto.SubmissionDto;
+import com.oj.service.pojo.dto.SubmissionDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
