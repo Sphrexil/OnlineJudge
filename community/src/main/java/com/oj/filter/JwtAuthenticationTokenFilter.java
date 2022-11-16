@@ -1,6 +1,7 @@
 package com.oj.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.oj.constants.GlobalConstant;
 import com.oj.enums.ResultCode;
 import com.oj.user.LoginUser;
 import com.oj.utils.JwtUtil;
@@ -51,7 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         String userId = claims.getSubject();
         //从redis中获取用户信息
-        LoginUser loginUser = redisCache.getCacheObject("bloglogin:" + userId);
+        LoginUser loginUser = redisCache.getCacheObject(GlobalConstant.RECEPTION_LOGIN_TOKEN + "::" + userId);
         //如果获取不到
         if(Objects.isNull(loginUser)){
             //说明登录过期  提示重新登录

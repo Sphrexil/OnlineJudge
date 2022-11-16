@@ -17,6 +17,7 @@
         <module>judge</module>
         <module>reception</module>
         <module>community</module>
+        <module>gateway</module>
     </modules>
 
     <properties>

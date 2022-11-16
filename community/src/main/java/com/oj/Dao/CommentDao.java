@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CommentDao extends BaseMapper<CommentEntity> {
 
+    Long getMaxId();
 }
 
 

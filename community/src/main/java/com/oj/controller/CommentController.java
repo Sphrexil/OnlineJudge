@@ -32,5 +32,8 @@ public class CommentController {
 //    public ResponseResult linkCommentList(Integer pageNum,Integer pageSize){
 //        return  commentService.commentList(SystemConstants.LINK_COMMENT,null,pageNum,pageSize);
 //    }
-
+    @GetMapping("/latestComment")
+    public ResponseResult getMaxId(){
+        return commentService.getMaxId();
+    }
 }

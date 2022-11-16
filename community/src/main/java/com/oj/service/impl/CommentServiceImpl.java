@@ -104,6 +104,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         return ResponseResult.okResult();
     }
 
+    @Override
+    public ResponseResult getMaxId() {
+
+        Long maxId = this.baseMapper.getMaxId();
+        return ResponseResult.okResult(maxId);
+    }
+
     private List<CommentVo> getChildrenList(Long id) {
         LambdaQueryWrapper<CommentEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(CommentEntity::getRootId, id);

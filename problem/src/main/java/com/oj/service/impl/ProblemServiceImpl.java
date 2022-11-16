@@ -23,6 +23,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemDao, ProblemEntity> i
         // 查询
         LambdaQueryWrapper<ProblemEntity> queryWrapper = new LambdaQueryWrapper<>();
         // 查询可见为1的数据
+        //noinspection unchecked
         queryWrapper.eq(ProblemEntity::getVisible, ProblemConstant.IsProblemVisible.ABLE_TO_SEE.getCode())
                 // 传了难度就筛选出该难度下的题
                 .eq(Objects.nonNull(difficulty) &&
