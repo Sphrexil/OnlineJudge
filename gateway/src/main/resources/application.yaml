@@ -1,0 +1,110 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: problem_router
+          uri: lb://problem
+          predicates:
+            - Path=/api/problem/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: reception_router
+          uri: lb://reception
+          predicates:
+            - Path=/api/login/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: judge_router
+          uri: lb://judge
+          predicates:
+            - Path=/api/judge/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: submission_router
+          uri: lb://submission
+          predicates:
+            - Path=/api/submission/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+
+        - id: community_article_router
+          uri: lb://community
+          predicates:
+            - Path=/api/article/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: community_comment_router
+          uri: lb://community
+          predicates:
+            - Path=/api/comment/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: sendMail_router
+          uri: lb://reception
+          predicates:
+#            - Path=/api/sendMail
+            - Query=to
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: loginValidate_router
+          uri: lb://reception
+          predicates:
+            - Path=/api/loginValidate
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: logout_router
+          uri: lb://reception
+          predicates:
+            - Path=/api/logout
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+        - id: user_router
+          uri: lb://reception
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
+
+        - id: problem_host_router
+          uri: lb://problem
+          predicates:
+            - Host=cdutoj.com
+
+        - id: reception_host_router
+          uri: lb://reception
+          predicates:
+            - Host=cdutoj.com
+
+        - id: judge_host_router
+          uri: lb://judge
+          predicates:
+            - Host=cdutoj.com
+
+        - id: submission_host_router
+          uri: lb://submission
+          predicates:
+            - Host=cdutoj.com
+
+        - id: community_host_router
+          uri: lb://community
+          predicates:
+            - Host=cdutoj.com
+
+
+
+#暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

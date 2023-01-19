@@ -123,10 +123,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         commentVos.forEach(commentVo -> {
             UserEntity user = (UserEntity) feignService.getUserById(commentVo.getCreateBy()).getData(new TypeReference<UserEntity>() {
             });
+            UserEntity toCommentUser = (UserEntity) feignService.getUserById(commentVo.getToCommentUserId()).getData(new TypeReference<UserEntity>() {
+            });
             commentVo.setUsername(user.getNickName());
             commentVo.setAvatar(user.getAvatar());
             if (commentVo.getToCommentId() != -1) {
-                commentVo.setToCommentUserName(user.getNickName());
+                commentVo.setToCommentUserName(toCommentUser.getNickName());
             }
         });
         return commentVos;

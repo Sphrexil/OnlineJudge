@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -88,15 +90,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
 
         //封装查询结果
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
-
+        Map viewCountMap = new HashMap<>();
         for (ArticleListVo articleListVo : articleListVos) {
             Long userId = articleListVo.getCreateBy();
             UserEntity user = (UserEntity) feignService.getUserById(userId).getData(new TypeReference<UserEntity>(){});
             articleListVo.setAvatar(user.getAvatar());
             articleListVo.setNickName(user.getNickName());
+            viewCountMap.put(articleListVo.getId().toString(), articleListVo.getViewCount());
         }
-
-
+        redisCache.setCacheMap("article:viewCount" , viewCountMap);
         PageUtils<ArticleListVo> pageVo = new PageUtils<>(articleListVos, pageUtils.getTotalCount(), pageNum, pageSize);
         return ResponseResult.okResult(pageVo);
     }
@@ -114,11 +116,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, ArticleEntity> i
             throw new SystemException(ResultCode.Article_NOT_EXIST);
         }
         //从redis中获取
-        Long viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        Long viewCount = Integer.toUnsignedLong(redisCache.getCacheMapValue("article:viewCount", id.toString()));
         if (Objects.isNull(viewCount)) {
             viewCount = article.getViewCount();
         }
         article.setViewCount(viewCount);
+//        Map viewCountMap = new HashMap<>();
+//        viewCountMap.put()
+//        redisCache.setCacheMap("article:viewCount", );
         //转换成VO
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         //根据分类id查询分类名
